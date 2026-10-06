@@ -1,11 +1,12 @@
 import fs from "fs"
 import path from "path"
+import sharp from "sharp"
 import type { GatsbyNode } from "gatsby"
 import { parseArticle } from "./src/markdown"
 import { SITE_URL, defaultLocale, localePath, locales } from "./src/i18n"
 import type { Alternate, Locale } from "./src/i18n"
 import { excerpt } from "./src/content"
-import type { Teaser, Variant } from "./src/content"
+import type { BodyItem, Img, Teaser, Variant } from "./src/content"
 
 // content/<slug>.md -> /<slug>/    content/<locale>/<slug>.md -> /<locale>/<slug>/
 const CONTENT_DIR = path.resolve("content")
@@ -22,23 +23,68 @@ function markdownVariants(locale: Locale): Variant[] {
       if (!fs.existsSync(path.join(CONTENT_DIR, src.trim().replace(/^\.?\//, "")))) console.warn(`[content] ${label}: image not found in content/: ${src}`)
     const v = /^[a-z0-9-]+$/.test(slug) ? parseArticle(slug, md) : null
     if (!v) console.warn(`[content] skipped ${label}: ${/^[a-z0-9-]+$/.test(slug) ? 'first line must be "# Title"' : "filename may only use letters, digits and hyphens"}`)
-    return v ? [{ ...v, locale }] : []
+    if (!v) return []
+    return [{ ...v, locale, hero: v.hero && withVariants(v.hero), intro: v.intro.map(enrich), sections: v.sections.map(s => ({ ...s, body: s.body.map(enrich) })) }]
   })
 }
 
-// Copy images (everything but .md) from content/ to static/content/ so /content/<path> serves them.
-export const onPreBootstrap: GatsbyNode["onPreBootstrap"] = () => {
+// Copy everything in content/ except .md to static/content/ so /content/<path> serves it, and make
+// WebP variants (480/800/1200 wide, never upscaled) of every png/jpg so phones don't download the original.
+const OUT_DIR = path.resolve("static/content")
+const WIDTHS = [480, 800, 1200]
+const RASTER = /\.(png|jpe?g|webp)$/i
+type Optimised = { srcSet: string; width: number; height: number; share: string }
+const optimised = new Map<string, Optimised>() // "/content/images/x.png" -> variants
+const urlFor = (rel: string) => "/content/" + encodeURI(rel)
+
+const walk = (dir: string): string[] =>
+  fs.readdirSync(dir, { withFileTypes: true }).flatMap(e => (e.isDirectory() ? walk(path.join(dir, e.name)) : [path.join(dir, e.name)]))
+
+async function processImages() {
+  optimised.clear()
   if (!fs.existsSync(CONTENT_DIR)) return
-  fs.cpSync(CONTENT_DIR, path.resolve("static/content"), {
-    recursive: true,
-    filter: src => fs.statSync(src).isDirectory() || !src.endsWith(".md"),
-  })
+  for (const file of walk(CONTENT_DIR)) {
+    if (file.endsWith(".md")) continue
+    const rel = path.relative(CONTENT_DIR, file).split(path.sep).join("/")
+    const dest = path.join(OUT_DIR, rel)
+    fs.mkdirSync(path.dirname(dest), { recursive: true })
+    fs.copyFileSync(file, dest) // original stays available (fallback src)
+    if (!RASTER.test(file)) continue
+    try {
+      const meta = await sharp(file).metadata()
+      const swap = (meta.orientation ?? 1) >= 5 // phone photos: EXIF rotation swaps width/height
+      const width = swap ? meta.height! : meta.width!
+      const height = swap ? meta.width! : meta.height!
+      const widths = [...new Set([...WIDTHS.filter(w => w < width), Math.min(width, WIDTHS[WIDTHS.length - 1])])].sort((a, b) => a - b)
+      const base = rel.replace(RASTER, "")
+      for (const w of widths) {
+        const out = path.join(OUT_DIR, `${base}-${w}.webp`)
+        if (fs.existsSync(out) && fs.statSync(out).mtimeMs >= fs.statSync(file).mtimeMs) continue // unchanged
+        await sharp(file).rotate().resize({ width: w, withoutEnlargement: true }).webp({ quality: 78 }).toFile(out)
+      }
+      optimised.set(urlFor(rel), {
+        srcSet: widths.map(w => `${urlFor(`${base}-${w}.webp`)} ${w}w`).join(", "),
+        width,
+        height,
+        share: urlFor(`${base}-${widths[widths.length - 1]}.webp`),
+      })
+    } catch (e) {
+      console.warn(`[content] could not optimise ${rel}, serving the original: ${(e as Error).message}`)
+    }
+  }
 }
+
+export const onPreBootstrap: GatsbyNode["onPreBootstrap"] = async () => {
+  await processImages()
+}
+
+const withVariants = (img: Img): Img => ({ ...img, ...optimised.get(img.img) })
+const enrich = (item: BodyItem): BodyItem => (typeof item === "object" && !Array.isArray(item) && "img" in item ? withVariants(item) : item)
 
 const MORE = 3
 
 function teaser(v: Variant): Teaser {
-  return { slug: v.slug, title: v.title, img: v.hero?.img, text: excerpt(v.intro, 140) }
+  return { slug: v.slug, title: v.title, img: v.hero?.img, srcSet: v.hero?.srcSet, text: excerpt(v.intro, 140) }
 }
 
 export const createPages: GatsbyNode["createPages"] = ({ actions }) => {

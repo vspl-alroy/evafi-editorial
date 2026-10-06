@@ -9,13 +9,16 @@ import { excerpt } from "../content"
 import { defaultLocale, ui } from "../i18n"
 import divider from "../images/divider.svg"
 
+// Rendered width of article images: the 720px column minus the 24px gutters, or the screen minus gutters.
+const MAIN_SIZES = "(min-width: 720px) 672px, calc(100vw - 48px)"
+
 const Body = ({ items, tight, state }: { items: BodyItem[]; tight?: boolean; state: string }) => (
   <div className={tight ? "body tight" : "body"}>
     {items.map((item, i) =>
       typeof item === "object" && "btn" in item ? (
         <div key={i} className="cta"><a href={item.href}>{fillState(item.btn, state)}</a></div>
       ) : typeof item === "object" && "img" in item ? (
-        <img key={i} className="body-img" src={item.img} alt={item.alt} loading="lazy" decoding="async" />
+        <img key={i} className="body-img" src={item.img} srcSet={item.srcSet} sizes={item.srcSet ? MAIN_SIZES : undefined} width={item.width} height={item.height} alt={item.alt} loading="lazy" decoding="async" />
       ) : Array.isArray(item) ? (
         <div key={i}>{item.map(line => <p key={line}>{fillState(line, state)}</p>)}</div>
       ) : (
@@ -36,7 +39,7 @@ export default function Article({ pageContext: { title, date, hero: heroOverride
         <div className="wrap">
           <p className="dateline">{t.dateline} — {date ?? t.defaultDate}</p>
           <h1>{fillState(title, state)}</h1>
-          <img className="hero-img" src={heroOverride?.img ?? hero} alt={heroOverride?.alt ?? ""} fetchPriority="high" decoding="async" />
+          <img className="hero-img" src={heroOverride?.img ?? hero} srcSet={heroOverride?.srcSet} sizes={heroOverride?.srcSet ? MAIN_SIZES : undefined} alt={heroOverride?.alt ?? ""} fetchPriority="high" decoding="async" />
           <dl className="byline">
             <div><dt>{t.author}</dt><dd>{t.authorName}</dd></div>
             <div><dt>{t.updated}</dt><dd>{t.updatedValue}</dd></div>
@@ -81,7 +84,7 @@ export const Head = ({ pageContext, location }: HeadProps<object, Variant>) => {
       <HeadCommon
         locale={locale}
         alternates={pageContext.alternates ?? []}
-        seo={{ title, description: fill(excerpt(pageContext.intro, 155)), path: location.pathname, image: pageContext.hero?.img ?? hero, type: "article" }}
+        seo={{ title, description: fill(excerpt(pageContext.intro, 155)), path: location.pathname, image: pageContext.hero?.share ?? pageContext.hero?.img ?? hero, type: "article" }}
       />
     </>
   )

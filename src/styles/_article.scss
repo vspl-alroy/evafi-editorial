@@ -73,6 +73,7 @@
 
 .hero-img {
   width: 100%;
+  height: auto; // keep the aspect-ratio below even when the img has width/height attributes
   aspect-ratio: 1920 / 1072;
   object-fit: cover;
   margin-top: 32px;

@@ -3,7 +3,9 @@
 
 import type { Alternate, Locale } from "./i18n"
 
-export interface Img { img: string; alt: string }
+// img = the uploaded file. gatsby-node adds the optimised variants (see processImages):
+// srcSet (WebP, several widths), width/height of the original, share = largest variant (for og:image).
+export interface Img { img: string; alt: string; srcSet?: string; width?: number; height?: number; share?: string }
 export interface Btn { btn: string; href: string } // a link alone on a line: button with the writer's text
 export type BodyItem = string | string[] | Img | Btn
 
@@ -15,7 +17,7 @@ export interface Section {
 }
 
 // Card in "Todays Financial News": another article, never the one being read.
-export interface Teaser { slug: string; title: string; img?: string; text: string }
+export interface Teaser { slug: string; title: string; img?: string; srcSet?: string; text: string }
 
 export interface Variant {
   slug: string

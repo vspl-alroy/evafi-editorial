@@ -14,7 +14,8 @@
     "gatsby-plugin-sass": "^6.16.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "sass": "^1.105.1"
+    "sass": "^1.105.1",
+    "sharp": "^0.32.6"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",

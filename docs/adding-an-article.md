@@ -47,7 +47,7 @@ Test it by adding `?state=Texas` to the article address.
 ## 3. Add the images
 
 1. Save the image with a simple name: lowercase letters, digits and hyphens, e.g. `divorce-story.png` (no spaces).
-2. **Make it small first.** Aim for under **500 KB** and about **1200 pixels wide** (JPG for photos). Large images make the page slow on phones.
+2. **Size:** the site shrinks every PNG/JPG automatically (to small WebP versions for phones), so you don't have to compress heavily. Still, upload images **at least 1200 pixels wide** and keep the file **under about 5 MB**. Don't upload tiny images, they look blurry on large screens.
 3. Upload it to the `content/images/` folder on GitHub (see step 4).
 4. In the article refer to it as `images/divorce-story.png`.
 
