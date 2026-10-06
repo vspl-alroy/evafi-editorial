@@ -74,7 +74,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 32px 0 48px;
+  padding-block: 32px 48px; // not shorthand: <main> also has .wrap (horizontal padding)
 
   >section {
     display: flex;
