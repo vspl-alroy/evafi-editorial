@@ -1,4 +1,4 @@
-// News-site theme: markdown pages only (.newsroom). Overrides _article.scss; Figma variants untouched.
+// News-site theme: the home page and the 404 (wrapper class "newsroom"). Articles use the Figma design in _article.scss.
 @use "tokens" as *;
 
 .newsroom {
@@ -125,7 +125,7 @@
   .news {
     max-width: 1040px;
     margin: 16px auto 0;
-    padding: 32px 16px 48px;
+    padding: 32px 24px 48px; // 24px = same gutter as the header .wrap
     border-top: 1px solid $news-line;
 
     >h2 {

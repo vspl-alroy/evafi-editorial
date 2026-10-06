@@ -53,7 +53,7 @@ export function parseArticle(slug: string, md: string): Variant | null {
   const intro = body(head.replace(/^# .+$/m, "").replace(/^Date:.*$/im, "")).body
   const first = intro[0]
   const hero = first && typeof first === "object" && "img" in first ? (intro.shift() as Img) : undefined
-  return { slug, label: slug, newsroom: true, date, cta, title, hero, intro, sections }
+  return { slug, label: slug, date, cta, title, hero, intro, sections }
 }
 
 if (process.argv[1]?.endsWith("markdown.ts")) {

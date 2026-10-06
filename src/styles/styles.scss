@@ -1,3 +1,3 @@
 @use "base";
 @use "article";
-@use "newsroom"; // must come after article: same specificity wins by order
+@use "newsroom"; // home page and 404 only (wrapper has class "newsroom"); after article so it wins at equal specificity

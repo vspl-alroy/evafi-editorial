@@ -24,11 +24,11 @@ const Body = ({ items, tight, state }: { items: BodyItem[]; tight?: boolean; sta
   </div>
 )
 
-export default function Article({ pageContext: { title, date, hero: heroOverride, newsroom, intro, sections, cta, more, locale = defaultLocale, alternates = [] } }: PageProps<object, Variant>) {
+export default function Article({ pageContext: { title, date, hero: heroOverride, intro, sections, cta, more, locale = defaultLocale, alternates = [] } }: PageProps<object, Variant>) {
   const state = useStateName(locale)
   const t = ui[locale]
   return (
-    <div className={newsroom ? "newsroom" : undefined}>
+    <div>
       <Header locale={locale} alternates={alternates} />
 
       <section className="hero">
@@ -36,6 +36,10 @@ export default function Article({ pageContext: { title, date, hero: heroOverride
           <p className="dateline">{t.dateline} — {date ?? t.defaultDate}</p>
           <h1>{fillState(title, state)}</h1>
           <img className="hero-img" src={heroOverride?.img ?? hero} alt={heroOverride?.alt ?? ""} fetchPriority="high" decoding="async" />
+          <dl className="byline">
+            <div><dt>{t.author}</dt><dd>{t.authorName}</dd></div>
+            <div><dt>{t.updated}</dt><dd>{t.updatedValue}</dd></div>
+          </dl>
         </div>
       </section>
 
