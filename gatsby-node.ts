@@ -2,8 +2,9 @@ import fs from "fs"
 import path from "path"
 import type { GatsbyNode } from "gatsby"
 import { parseArticle } from "./src/markdown"
-import { defaultLocale, localePath, locales } from "./src/i18n"
+import { SITE_URL, defaultLocale, localePath, locales } from "./src/i18n"
 import type { Alternate, Locale } from "./src/i18n"
+import { excerpt } from "./src/content"
 import type { Teaser, Variant } from "./src/content"
 
 // content/<slug>.md -> /<slug>/    content/<locale>/<slug>.md -> /<locale>/<slug>/
@@ -37,9 +38,7 @@ export const onPreBootstrap: GatsbyNode["onPreBootstrap"] = () => {
 const MORE = 3
 
 function teaser(v: Variant): Teaser {
-  const first = v.intro.find((b): b is string => typeof b === "string") ?? ""
-  const text = first.length > 140 ? first.slice(0, 140).replace(/\s+\S*$/, "") + "…" : first
-  return { slug: v.slug, title: v.title, img: v.hero?.img, text }
+  return { slug: v.slug, title: v.title, img: v.hero?.img, text: excerpt(v.intro, 140) }
 }
 
 export const createPages: GatsbyNode["createPages"] = ({ actions }) => {
@@ -81,4 +80,28 @@ export const createPages: GatsbyNode["createPages"] = ({ actions }) => {
       })
     })
   }
+}
+
+// Static robots.txt + sitemap.xml (with hreflang alternates). Search engines are told to stay away
+// unless the build sets GATSBY_INDEXABLE=1, so the development site is not indexed by accident.
+export const onPostBuild: GatsbyNode["onPostBuild"] = () => {
+  const indexable = process.env.GATSBY_INDEXABLE === "1"
+  fs.writeFileSync(
+    path.resolve("public/robots.txt"),
+    indexable ? `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n` : "User-agent: *\nDisallow: /\n",
+  )
+  const slugs = new Map<string, Locale[]>() // slug ("" = home) -> locales that have it
+  for (const locale of locales) {
+    const articles = markdownVariants(locale)
+    if (locale === defaultLocale || articles.length) slugs.set("", [...(slugs.get("") ?? []), locale])
+    for (const v of articles) slugs.set(v.slug, [...(slugs.get(v.slug) ?? []), locale])
+  }
+  const urls = [...slugs].map(([slug, ls]) => {
+    const alts = ls.length > 1 ? ls.map(l => `<xhtml:link rel="alternate" hreflang="${l}" href="${SITE_URL}${localePath(l, slug)}"/>`).join("") : ""
+    return ls.map(l => `<url><loc>${SITE_URL}${localePath(l, slug)}</loc>${alts}</url>`).join("")
+  })
+  fs.writeFileSync(
+    path.resolve("public/sitemap.xml"),
+    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${urls.join("")}</urlset>\n`,
+  )
 }

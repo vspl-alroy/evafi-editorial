@@ -30,3 +30,9 @@ export interface Variant {
   locale?: Locale
   alternates?: Alternate[] // every language this page exists in, including itself
 }
+
+// First plain paragraph, cut at a word boundary: card text and <meta name="description">.
+export function excerpt(items: BodyItem[], max: number): string {
+  const first = items.find((b): b is string => typeof b === "string") ?? ""
+  return first.length > max ? first.slice(0, max).replace(/\s+\S*$/, "") + "…" : first
+}

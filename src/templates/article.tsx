@@ -5,6 +5,7 @@ import type { BodyItem, Variant } from "../content"
 import hero from "../images/hero.png"
 import verified24 from "../images/verified-24.svg"
 import { HeadCommon, Footer, Header, NewsCards, fillState, useStateName } from "../components/shared"
+import { excerpt } from "../content"
 import { defaultLocale, ui } from "../i18n"
 import divider from "../images/divider.svg"
 
@@ -70,12 +71,18 @@ export default function Article({ pageContext: { title, date, hero: heroOverride
   )
 }
 
-export const Head = ({ pageContext }: HeadProps<object, Variant>) => {
+export const Head = ({ pageContext, location }: HeadProps<object, Variant>) => {
   const locale = pageContext.locale ?? defaultLocale
+  const fill = (s: string) => fillState(s, ui[locale].defaultState)
+  const title = fill(pageContext.title)
   return (
     <>
-      <title>{fillState(pageContext.title, ui[locale].defaultState)}</title>
-      <HeadCommon locale={locale} alternates={pageContext.alternates ?? []} />
+      <title>{title}</title>
+      <HeadCommon
+        locale={locale}
+        alternates={pageContext.alternates ?? []}
+        seo={{ title, description: fill(excerpt(pageContext.intro, 155)), path: location.pathname, image: pageContext.hero?.img ?? hero, type: "article" }}
+      />
     </>
   )
 }
