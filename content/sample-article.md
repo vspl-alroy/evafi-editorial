@@ -27,3 +27,5 @@ Checking costs nothing. Here's how it works:
 1. Answer a few quick questions.
 2. See whether you qualify.
 3. Review your options.
+
+[Take EvaFi's Free Quiz](https://evafi.relintex.dev/onboarding)
