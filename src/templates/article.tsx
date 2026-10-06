@@ -4,13 +4,12 @@ import "../styles/styles.scss"
 import type { BodyItem, Variant } from "../content"
 import hero from "../images/hero.png"
 import verified24 from "../images/verified-24.svg"
-import { DEFAULT_STATE, Fonts, Footer, Header, NewsCards, fillState, useStateName } from "../components/shared"
+import { HeadCommon, Footer, Header, NewsCards, fillState, useStateName } from "../components/shared"
+import { defaultLocale, ui } from "../i18n"
 import divider from "../images/divider.svg"
 
 // TODO: real quiz URL
 const QUIZ_URL = "#"
-
-const steps = ["Answer a few questions", "See your estimate", "Decide if it's right for you"]
 
 const Body = ({ items, tight, state }: { items: BodyItem[]; tight?: boolean; state: string }) => (
   <div className={tight ? "body tight" : "body"}>
@@ -26,15 +25,16 @@ const Body = ({ items, tight, state }: { items: BodyItem[]; tight?: boolean; sta
   </div>
 )
 
-export default function Article({ pageContext: { title, date, hero: heroOverride, newsroom, intro, sections, more } }: PageProps<object, Variant>) {
-  const state = useStateName()
+export default function Article({ pageContext: { title, date, hero: heroOverride, newsroom, intro, sections, more, locale = defaultLocale, alternates = [] } }: PageProps<object, Variant>) {
+  const state = useStateName(locale)
+  const t = ui[locale]
   return (
     <div className={newsroom ? "newsroom" : undefined}>
-      <Header />
+      <Header locale={locale} alternates={alternates} />
 
       <section className="hero">
         <div className="wrap">
-          <p className="dateline">WeeklyFinancialNews.com — {date ?? "September 30, 2026"}</p>
+          <p className="dateline">{t.dateline} — {date ?? t.defaultDate}</p>
           <h1>{fillState(title, state)}</h1>
           <img className="hero-img" src={heroOverride?.img ?? hero} alt={heroOverride?.alt ?? ""} fetchPriority="high" decoding="async" />
         </div>
@@ -43,7 +43,7 @@ export default function Article({ pageContext: { title, date, hero: heroOverride
       <div className="process">
         <img src={divider} width="375" height="1" alt="" />
         <ul>
-          {steps.map(s => <li key={s}><img src={verified24} width="24" height="24" alt="" />{s}</li>)}
+          {t.steps.map(s => <li key={s}><img src={verified24} width="24" height="24" alt="" />{s}</li>)}
         </ul>
         <img src={divider} width="375" height="1" alt="" />
       </div>
@@ -57,19 +57,22 @@ export default function Article({ pageContext: { title, date, hero: heroOverride
             {sec.steps && <ol>{sec.steps.map(s => <li key={s}>{s}</li>)}</ol>}
           </section>
         ))}
-        <div className="cta"><a href={QUIZ_URL}>Take EvaFi's Free Quiz</a></div>
+        <div className="cta"><a href={QUIZ_URL}>{t.cta}</a></div>
 
-        {more && more.length > 0 && <NewsCards items={more} state={state} />}
+        {more && more.length > 0 && <NewsCards items={more} state={state} locale={locale} />}
       </main>
 
-      <Footer />
+      <Footer locale={locale} />
     </div>
   )
 }
 
-export const Head = ({ pageContext }: HeadProps<object, Variant>) => (
-  <>
-    <title>{fillState(pageContext.title, DEFAULT_STATE)}</title>
-    <Fonts />
-  </>
-)
+export const Head = ({ pageContext }: HeadProps<object, Variant>) => {
+  const locale = pageContext.locale ?? defaultLocale
+  return (
+    <>
+      <title>{fillState(pageContext.title, ui[locale].defaultState)}</title>
+      <HeadCommon locale={locale} alternates={pageContext.alternates ?? []} />
+    </>
+  )
+}

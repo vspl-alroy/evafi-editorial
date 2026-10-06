@@ -10,5 +10,5 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src", "gatsby-node.ts", "gatsby-config.ts"]
+  "include": ["src", "scripts", "gatsby-node.ts", "gatsby-config.ts"]
 }

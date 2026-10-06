@@ -1,0 +1,23 @@
+name: Translation review
+
+# Blocks merging while any translation is still an unreviewed AI draft.
+# Make "check" a required status check on main (Settings -> Branches) to enforce it.
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx tsx scripts/translate.ts --selftest
+      - run: npx tsx scripts/translate.ts --check --strict
