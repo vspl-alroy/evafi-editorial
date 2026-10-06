@@ -8,13 +8,12 @@ import { HeadCommon, Footer, Header, NewsCards, fillState, useStateName } from "
 import { defaultLocale, ui } from "../i18n"
 import divider from "../images/divider.svg"
 
-// TODO: real quiz URL
-const QUIZ_URL = "#"
-
 const Body = ({ items, tight, state }: { items: BodyItem[]; tight?: boolean; state: string }) => (
   <div className={tight ? "body tight" : "body"}>
     {items.map((item, i) =>
-      typeof item === "object" && !Array.isArray(item) ? (
+      typeof item === "object" && "btn" in item ? (
+        <div key={i} className="cta"><a href={item.href}>{fillState(item.btn, state)}</a></div>
+      ) : typeof item === "object" && "img" in item ? (
         <img key={i} className="body-img" src={item.img} alt={item.alt} loading="lazy" decoding="async" />
       ) : Array.isArray(item) ? (
         <div key={i}>{item.map(line => <p key={line}>{fillState(line, state)}</p>)}</div>
@@ -25,7 +24,7 @@ const Body = ({ items, tight, state }: { items: BodyItem[]; tight?: boolean; sta
   </div>
 )
 
-export default function Article({ pageContext: { title, date, hero: heroOverride, newsroom, intro, sections, more, locale = defaultLocale, alternates = [] } }: PageProps<object, Variant>) {
+export default function Article({ pageContext: { title, date, hero: heroOverride, newsroom, intro, sections, cta, more, locale = defaultLocale, alternates = [] } }: PageProps<object, Variant>) {
   const state = useStateName(locale)
   const t = ui[locale]
   return (
@@ -57,7 +56,7 @@ export default function Article({ pageContext: { title, date, hero: heroOverride
             {sec.steps && <ol>{sec.steps.map(s => <li key={s}>{s}</li>)}</ol>}
           </section>
         ))}
-        <div className="cta"><a href={QUIZ_URL}>{t.cta}</a></div>
+        {cta && <div className="cta"><a href={cta.href}>{cta.label ?? t.cta}</a></div>}
 
         {more && more.length > 0 && <NewsCards items={more} state={state} locale={locale} />}
       </main>
