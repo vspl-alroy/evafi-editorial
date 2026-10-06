@@ -1,0 +1,23 @@
+// Design tokens. Sass vars for build-time use, CSS vars (in :root / .newsroom) for runtime.
+$gray-900: #212121;
+$blue-800: #0a3d6b;
+$blue-600: #126dbf;
+$red-100: #ffc5c7;
+
+$news-accent: #c4161c;
+$news-accent-dark: #9d1015;
+$news-muted: #5f6368;
+$news-line: #e5e7eb;
+
+$font-sans: "Open Sans", system-ui, sans-serif;
+$font-work: "Work Sans", sans-serif;
+$font-inter: Inter, system-ui, sans-serif;
+$font-serif: Tinos, "Times New Roman", serif;
+
+$bp-md: 720px;
+
+@mixin md {
+    @media (min-width: $bp-md) {
+        @content;
+    }
+}
