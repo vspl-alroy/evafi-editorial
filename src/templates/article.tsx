@@ -1,10 +1,9 @@
 import * as React from "react"
+import { Link } from "gatsby"
 import type { HeadProps, PageProps } from "gatsby"
 import "../styles/styles.scss"
 import type { BodyItem, Variant } from "../content"
 import hero from "../images/hero.png"
-import news2 from "../images/news-2.png"
-import news3 from "../images/news-3.png"
 import verified18 from "../images/verified-18.svg"
 import verified24 from "../images/verified-24.svg"
 import divider from "../images/divider.svg"
@@ -14,7 +13,6 @@ const QUIZ_URL = "#"
 const DEFAULT_STATE = "your state"
 
 const steps = ["Answer a few questions", "See your estimate", "Decide if it's right for you"]
-const news = [hero, news2, news3]
 const footerLinks = ["About", "Privacy Policy", "Terms of Use", "CA Privacy Policy", "Do Not Sell or Share", "E-Comm Consent", "Advertiser Disclosure"]
 
 const fillState = (s: string, state: string) => s.replaceAll("{State}", state)
@@ -43,7 +41,7 @@ const Body = ({ items, tight, state }: { items: BodyItem[]; tight?: boolean; sta
   </div>
 )
 
-export default function Article({ pageContext: { title, date, hero: heroOverride, newsroom, intro, sections } }: PageProps<object, Variant>) {
+export default function Article({ pageContext: { title, date, hero: heroOverride, newsroom, intro, sections, more } }: PageProps<object, Variant>) {
   const state = useStateName()
   return (
     <div className={newsroom ? "newsroom" : undefined}>
@@ -81,16 +79,20 @@ export default function Article({ pageContext: { title, date, hero: heroOverride
         ))}
         <div className="cta"><a href={QUIZ_URL}>Take EvaFi's Free Quiz</a></div>
 
-        <section className="news">
-          <h2>Todays Financial News</h2>
-          {news.map((src, i) => (
-            <article key={i}>
-              <div className="news-img"><img src={src} alt="" loading="lazy" decoding="async" /></div>
-              <h3>Content</h3>
-              <p>Most people carrying at least $6,000 in eligible debt do — and income doesn't need to be verified just to check.</p>
-            </article>
-          ))}
-        </section>
+        {more && more.length > 0 && (
+          <section className="news">
+            <h2>Todays Financial News</h2>
+            {more.map(a => (
+              <article key={a.slug}>
+                <Link to={`/${a.slug}/`}>
+                  <div className="news-img"><img src={a.img ?? hero} alt="" loading="lazy" decoding="async" /></div>
+                  <h3>{fillState(a.title, state)}</h3>
+                  <p>{fillState(a.text, state)}</p>
+                </Link>
+              </article>
+            ))}
+          </section>
+        )}
       </main>
 
       <footer className="site-footer">

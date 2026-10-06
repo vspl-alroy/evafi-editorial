@@ -131,6 +131,14 @@
     text-align: center;
   }
 
+  article a {
+    display: contents; // whole card is the link; children stay flex items of article
+  }
+
+  article:hover h3 {
+    text-decoration: underline;
+  }
+
   article {
     display: flex;
     flex-direction: column;

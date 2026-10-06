@@ -2,6 +2,7 @@ import fs from "fs"
 import path from "path"
 import type { GatsbyNode } from "gatsby"
 import { parseArticle } from "./src/markdown"
+import type { Teaser, Variant } from "./src/content"
 
 // content/<slug>.md -> /<slug>/
 const CONTENT_DIR = path.resolve("content")
@@ -28,24 +29,32 @@ export const onPreBootstrap: GatsbyNode["onPreBootstrap"] = () => {
   })
 }
 
+const MORE = 3
+
+function teaser(v: Variant): Teaser {
+  const first = v.intro.find((b): b is string => typeof b === "string") ?? ""
+  const text = first.length > 140 ? first.slice(0, 140).replace(/\s+\S*$/, "") + "…" : first
+  return { slug: v.slug, title: v.title, img: v.hero?.img, text }
+}
+
 export const createPages: GatsbyNode["createPages"] = ({ actions }) => {
   const seen = new Set<string>()
-  const articles = markdownVariants()
+  const articles = markdownVariants().filter(v => {
+    if (seen.has(v.slug)) console.warn(`[content] duplicate slug "${v.slug}" ignored`)
+    return !seen.has(v.slug) && !!seen.add(v.slug)
+  })
   actions.createPage({
     path: "/",
     component: path.resolve("src/templates/index.tsx"),
     context: { articles: articles.map(({ slug, title }) => ({ slug, title })) },
   })
-  for (const variant of articles) {
-    if (seen.has(variant.slug)) {
-      console.warn(`[content] duplicate slug "${variant.slug}" ignored`)
-      continue
-    }
-    seen.add(variant.slug)
+  // "More news": the next MORE articles after this one (wrapping), so it's never the page being read.
+  articles.forEach((variant, i) => {
+    const others = articles.slice(i + 1).concat(articles.slice(0, i))
     actions.createPage({
       path: `/${variant.slug}/`,
       component: path.resolve("src/templates/article.tsx"),
-      context: variant,
+      context: { ...variant, more: others.slice(0, MORE).map(teaser) },
     })
-  }
+  })
 }

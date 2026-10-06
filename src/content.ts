@@ -11,6 +11,9 @@ export interface Section {
   tight?: boolean
 }
 
+// Card in "Todays Financial News": another article, never the one being read.
+export interface Teaser { slug: string; title: string; img?: string; text: string }
+
 export interface Variant {
   slug: string
   label: string
@@ -20,4 +23,5 @@ export interface Variant {
   newsroom?: boolean // news-site theme (markdown pages)
   intro: BodyItem[]
   sections: Section[]
+  more?: Teaser[]
 }
