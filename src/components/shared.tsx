@@ -75,12 +75,33 @@ export const NewsCards = ({ items, state, locale, title }: { items: Teaser[]; st
   </section>
 )
 
-// <head> bits shared by every page: language, hreflang alternates, fonts.
-export const HeadCommon = ({ locale, alternates }: { locale: Locale; alternates: Alternate[] }) => {
+export interface Seo { title: string; description: string; path: string; image?: string; type?: "article" | "website" }
+
+const INDEXABLE = process.env.GATSBY_INDEXABLE === "1" // see onPostBuild in gatsby-node.ts
+
+// <head> bits shared by every page: language, SEO tags, hreflang alternates, fonts.
+export const HeadCommon = ({ locale, alternates, seo }: { locale: Locale; alternates: Alternate[]; seo?: Seo }) => {
   const x = alternates.find(a => a.locale === defaultLocale)
+  const abs = (p: string) => (p.startsWith("http") ? p : SITE_URL + p)
   return (
     <>
       <html lang={locale} />
+      <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+      {!INDEXABLE && <meta name="robots" content="noindex, nofollow" />}
+      {seo && (
+        <>
+          <meta name="description" content={seo.description} />
+          <link rel="canonical" href={abs(seo.path)} />
+          <meta property="og:site_name" content={ui[locale].brand} />
+          <meta property="og:type" content={seo.type ?? "website"} />
+          <meta property="og:title" content={seo.title} />
+          <meta property="og:description" content={seo.description} />
+          <meta property="og:url" content={abs(seo.path)} />
+          <meta property="og:locale" content={locale === "es" ? "es_US" : "en_US"} />
+          {seo.image && <meta property="og:image" content={abs(seo.image)} />}
+          <meta name="twitter:card" content={seo.image ? "summary_large_image" : "summary"} />
+        </>
+      )}
       {alternates.length > 1 && alternates.map(a => <link key={a.locale} rel="alternate" hrefLang={a.locale} href={SITE_URL + a.path} />)}
       {alternates.length > 1 && x && <link rel="alternate" hrefLang="x-default" href={SITE_URL + x.path} />}
       <link rel="preconnect" href="https://fonts.googleapis.com" />

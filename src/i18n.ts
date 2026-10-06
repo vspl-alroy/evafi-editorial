@@ -24,6 +24,7 @@ export interface UI {
   authorName: string
   updated: string
   updatedValue: string
+  description: string // home page <meta name="description">
   news: string
   notFound: string
   notFoundText: string
@@ -47,6 +48,7 @@ export const ui: Record<Locale, UI> = {
     authorName: "EvaFi Editorial team",
     updated: "Updated",
     updatedValue: "This week",
+    description: "News and guides about credit card debt and the options for getting out of it.",
     news: "Todays Financial News",
     notFound: "Page not found",
     notFoundText: "We couldn't find the page you were looking for. It may have moved or the link may be wrong.",
@@ -69,6 +71,7 @@ export const ui: Record<Locale, UI> = {
     authorName: "Equipo editorial de EvaFi",
     updated: "Actualizado",
     updatedValue: "Esta semana",
+    description: "Noticias y guías sobre la deuda de tarjetas de crédito y las opciones para salir de ella.",
     news: "Noticias financieras de hoy",
     notFound: "Página no encontrada",
     notFoundText: "No pudimos encontrar la página que buscabas. Puede que se haya movido o que el enlace sea incorrecto.",

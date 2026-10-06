@@ -21,9 +21,9 @@ export default function Index({ pageContext: { articles, locale, alternates } }:
   )
 }
 
-export const Head = ({ pageContext: { locale, alternates } }: HeadProps<object, Ctx>) => (
+export const Head = ({ pageContext: { locale, alternates }, location }: HeadProps<object, Ctx>) => (
   <>
     <title>{ui[locale].brand}</title>
-    <HeadCommon locale={locale} alternates={alternates} />
+    <HeadCommon locale={locale} alternates={alternates} seo={{ title: ui[locale].brand, description: ui[locale].description, path: location.pathname }} />
   </>
 )
