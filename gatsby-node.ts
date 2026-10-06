@@ -9,8 +9,6 @@ import type { Teaser, Variant } from "./src/content"
 // content/<slug>.md -> /<slug>/    content/<locale>/<slug>.md -> /<locale>/<slug>/
 const CONTENT_DIR = path.resolve("content")
 const dirFor = (locale: Locale) => (locale === defaultLocale ? CONTENT_DIR : path.join(CONTENT_DIR, locale))
-// AI drafts (see scripts/translate.ts) never go live: skipped in production unless INCLUDE_DRAFTS=1.
-const skipDrafts = process.env.NODE_ENV === "production" && !process.env.INCLUDE_DRAFTS
 
 function markdownVariants(locale: Locale): Variant[] {
   const dir = dirFor(locale)
@@ -19,10 +17,6 @@ function markdownVariants(locale: Locale): Variant[] {
     const slug = f.slice(0, -3).toLowerCase() // Foo.md and foo.md both serve /foo/
     const md = fs.readFileSync(path.join(dir, f), "utf8")
     const label = `${locale === defaultLocale ? "" : locale + "/"}${f}`
-    if (skipDrafts && /^<!--\s*i18n:.*status=draft/.test(md)) {
-      console.warn(`[content] skipped ${label}: translation is still a draft (set status=reviewed after review)`)
-      return []
-    }
     for (const [, src] of md.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g))
       if (!fs.existsSync(path.join(CONTENT_DIR, src.trim().replace(/^\.?\//, "")))) console.warn(`[content] ${label}: image not found in content/: ${src}`)
     const v = /^[a-z0-9-]+$/.test(slug) ? parseArticle(slug, md) : null
@@ -31,12 +25,12 @@ function markdownVariants(locale: Locale): Variant[] {
   })
 }
 
-// Copy images (everything but .md and i18n tooling files) from content/ to static/content/ so /content/<path> serves them.
+// Copy images (everything but .md) from content/ to static/content/ so /content/<path> serves them.
 export const onPreBootstrap: GatsbyNode["onPreBootstrap"] = () => {
   if (!fs.existsSync(CONTENT_DIR)) return
   fs.cpSync(CONTENT_DIR, path.resolve("static/content"), {
     recursive: true,
-    filter: src => fs.statSync(src).isDirectory() ? path.basename(src) !== "i18n" : !src.endsWith(".md"),
+    filter: src => fs.statSync(src).isDirectory() || !src.endsWith(".md"),
   })
 }
 

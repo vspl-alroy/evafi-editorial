@@ -1,5 +1,5 @@
 // Locales and UI strings. Article text comes from content/<locale>/<slug>.md, everything else from here.
-// Add a language: add the code to `locales`, a block to `ui`, and content/i18n/glossary.<code>.json (see scripts/translate.ts).
+// Add a language: add the code to `locales` and a block to `ui`, then put articles in content/<code>/.
 
 export const locales = ["en", "es"] as const
 export type Locale = (typeof locales)[number]
@@ -43,7 +43,7 @@ export const ui: Record<Locale, UI> = {
     defaultState: "your state",
     steps: ["Answer a few questions", "See your estimate", "Decide if it's right for you"],
   },
-  // AI draft: needs native + compliance review before it is relied on.
+  // TODO: have a native speaker review these UI strings.
   es: {
     name: "Español",
     brand: "Debt News USA",
