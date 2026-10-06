@@ -66,7 +66,7 @@ export const NewsCards = ({ items, state, locale, title }: { items: Teaser[]; st
     {items.map(a => (
       <article key={a.slug}>
         <Link to={localePath(locale, a.slug)}>
-          <div className="news-img"><img src={a.img ?? hero} alt="" loading="lazy" decoding="async" /></div>
+          <div className="news-img"><img src={a.img ?? hero} srcSet={a.srcSet} sizes={a.srcSet ? "(min-width: 720px) 320px, calc(100vw - 48px)" : undefined} alt="" loading="lazy" decoding="async" /></div>
           <h3>{fillState(a.title, state)}</h3>
           <p>{fillState(a.text, state)}</p>
         </Link>

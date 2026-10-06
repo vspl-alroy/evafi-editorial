@@ -27,7 +27,7 @@ There is no test runner. Verify by building and looking at `public/<slug>/index.
 ## Gotchas learned the hard way
 - `<main class="wrap content">` carries both `.wrap` and `.content`. Don't use the `padding:` shorthand in `.content`, it wipes the side padding from `.wrap`. Use `padding-block`.
 - Markdown link/button/hero detection works on **blocks separated by blank lines**; a link alone in a block is a button, the file's last line is the main CTA (label = link text).
-- `static/content/` and `public/` are generated and git-ignored. Don't commit them.
+- `static/content/` and `public/` are generated and git-ignored. Don't commit them. `processImages` (gatsby-node.ts) writes WebP variants next to copied images and fills `srcSet/width/height/share` on `Img` objects; the three `<img>` render sites (hero and body in `article.tsx`, cards in `shared.tsx`) use them. Don't set `width/height` attributes without `height:auto` in CSS (they override the aspect ratio).
 - `GATSBY_INDEXABLE` is unset on purpose: the dev site must stay `noindex` until launch.
 - Gatsby error "EnsureResources was not able to find resources" in dev = restart dev (new content file) or `npm run clean`.
 
