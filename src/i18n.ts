@@ -29,6 +29,7 @@ export interface UI {
   notFound: string
   notFoundText: string
   readThese: string
+  goHome: string
   cta: string
   dateline: string
   defaultDate: string
@@ -53,6 +54,7 @@ export const ui: Record<Locale, UI> = {
     notFound: "Page not found",
     notFoundText: "We couldn't find the page you were looking for. It may have moved or the link may be wrong.",
     readThese: "Articles you can read",
+    goHome: "Back to the home page",
     cta: "Take EvaFi's Free Quiz",
     dateline: "WeeklyFinancialNews.com",
     defaultDate: "September 30, 2026",
@@ -76,6 +78,7 @@ export const ui: Record<Locale, UI> = {
     notFound: "Página no encontrada",
     notFoundText: "No pudimos encontrar la página que buscabas. Puede que se haya movido o que el enlace sea incorrecto.",
     readThese: "Artículos que puedes leer",
+    goHome: "Volver a la página de inicio",
     cta: "Haz el cuestionario gratuito de EvaFi",
     dateline: "WeeklyFinancialNews.com",
     defaultDate: "30 de septiembre de 2026",

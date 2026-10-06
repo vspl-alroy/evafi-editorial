@@ -14,18 +14,18 @@ export default function NotFound({ pageContext: { byLocale } }: PageProps<object
   const t = ui[locale]
   const articles = byLocale[locale] ?? []
   return (
-    <div className="newsroom">
-      <Header locale={locale} alternates={[]} />
+    <div>
+      <Header locale={locale} alternates={[]} wide />
       <main className="home">
         <div className="wrap not-found">
           <p className="dateline">404</p>
           <h1>{t.notFound}</h1>
           <p>{t.notFoundText}</p>
-          <Link to={localePath(locale)}>{t.brand}</Link>
+          <Link to={localePath(locale)}>{t.goHome}</Link>
         </div>
         {articles.length > 0 && <NewsCards items={articles} state={state} locale={locale} title={t.readThese} />}
       </main>
-      <Footer locale={locale} />
+      <Footer locale={locale} wide />
     </div>
   )
 }
