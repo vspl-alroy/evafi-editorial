@@ -24,7 +24,6 @@ export interface Variant {
   hero?: Img
   date?: string // dateline text, e.g. "October 6, 2026"
   cta?: { href: string; label?: string } // quiz link, from the last line of the markdown file
-  newsroom?: boolean // news-site theme (markdown pages)
   intro: BodyItem[]
   sections: Section[]
   more?: Teaser[]
