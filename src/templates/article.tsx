@@ -1,31 +1,16 @@
 import * as React from "react"
-import { Link } from "gatsby"
 import type { HeadProps, PageProps } from "gatsby"
 import "../styles/styles.scss"
 import type { BodyItem, Variant } from "../content"
 import hero from "../images/hero.png"
-import verified18 from "../images/verified-18.svg"
 import verified24 from "../images/verified-24.svg"
+import { DEFAULT_STATE, Fonts, Footer, Header, NewsCards, fillState, useStateName } from "../components/shared"
 import divider from "../images/divider.svg"
 
 // TODO: real quiz URL
 const QUIZ_URL = "#"
-const DEFAULT_STATE = "your state"
 
 const steps = ["Answer a few questions", "See your estimate", "Decide if it's right for you"]
-const footerLinks = ["About", "Privacy Policy", "Terms of Use", "CA Privacy Policy", "Do Not Sell or Share", "E-Comm Consent", "Advertiser Disclosure"]
-
-const fillState = (s: string, state: string) => s.replaceAll("{State}", state)
-
-// {State} comes from ?state=Texas; the static build renders the default and swaps it after hydration.
-function useStateName() {
-  const [state, setState] = React.useState(DEFAULT_STATE)
-  React.useEffect(() => {
-    const q = new URLSearchParams(window.location.search).get("state")?.trim()
-    if (q) setState(q)
-  }, [])
-  return state
-}
 
 const Body = ({ items, tight, state }: { items: BodyItem[]; tight?: boolean; state: string }) => (
   <div className={tight ? "body tight" : "body"}>
@@ -45,12 +30,7 @@ export default function Article({ pageContext: { title, date, hero: heroOverride
   const state = useStateName()
   return (
     <div className={newsroom ? "newsroom" : undefined}>
-      <header className="site-header">
-        <div className="wrap">
-          <p className="brand">Debt News USA</p>
-          <p className="trust"><img src={verified18} width="18" height="18" alt="" />Trusted source of news</p>
-        </div>
-      </header>
+      <Header />
 
       <section className="hero">
         <div className="wrap">
@@ -79,39 +59,17 @@ export default function Article({ pageContext: { title, date, hero: heroOverride
         ))}
         <div className="cta"><a href={QUIZ_URL}>Take EvaFi's Free Quiz</a></div>
 
-        {more && more.length > 0 && (
-          <section className="news">
-            <h2>Todays Financial News</h2>
-            {more.map(a => (
-              <article key={a.slug}>
-                <Link to={`/${a.slug}/`}>
-                  <div className="news-img"><img src={a.img ?? hero} alt="" loading="lazy" decoding="async" /></div>
-                  <h3>{fillState(a.title, state)}</h3>
-                  <p>{fillState(a.text, state)}</p>
-                </Link>
-              </article>
-            ))}
-          </section>
-        )}
+        {more && more.length > 0 && <NewsCards items={more} state={state} />}
       </main>
 
-      <footer className="site-footer">
-        <div className="wrap">
-          <p className="trust"><img src={verified18} width="18" height="18" alt="" />Secure &amp; encrypted</p>
-          <p className="trust"><img src={verified18} width="18" height="18" alt="" />Your privacy matters</p>
-          <nav>{footerLinks.map(l => <a key={l} href="#">{l}</a>)}</nav>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
 
 export const Head = ({ pageContext }: HeadProps<object, Variant>) => (
   <>
-    <html lang="en" />
     <title>{fillState(pageContext.title, DEFAULT_STATE)}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&family=Open+Sans:wght@400;700&family=Tinos:wght@700&family=Work+Sans:wght@400;600&display=swap" />
+    <Fonts />
   </>
 )

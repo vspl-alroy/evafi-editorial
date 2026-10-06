@@ -142,6 +142,12 @@
     }
   }
 
+  .home .news {
+    border-top: 0; // no divider: nothing above it on the home page
+    padding-top: 40px;
+    min-height: 60vh;
+  }
+
   .news-img {
     margin: 0;
     background: $news-line;
@@ -154,6 +160,10 @@
 
     .trust {
       color: #fff;
+
+      img {
+        filter: invert(1); // icon is dark; footer is dark
+      }
     }
 
     nav {

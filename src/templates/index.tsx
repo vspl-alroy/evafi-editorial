@@ -1,18 +1,25 @@
 import * as React from "react"
-import { Link } from "gatsby"
 import type { PageProps } from "gatsby"
+import "../styles/styles.scss"
+import type { Teaser } from "../content"
+import { Fonts, Footer, Header, NewsCards, useStateName } from "../components/shared"
 
-type Ctx = { articles: { slug: string; title: string }[] }
-
-export default function Index({ pageContext: { articles } }: PageProps<object, Ctx>) {
+export default function Index({ pageContext: { articles } }: PageProps<object, { articles: Teaser[] }>) {
+  const state = useStateName()
   return (
-    <main style={{ padding: 16, fontFamily: "sans-serif" }}>
-      <h1>Articles</h1>
-      <ul>
-        {articles.map(a => <li key={a.slug}><Link to={`/${a.slug}/`}>{a.title}</Link></li>)}
-      </ul>
-    </main>
+    <div className="newsroom">
+      <Header />
+      <main className="home">
+        {articles.length > 0 && <NewsCards items={articles} state={state} />}
+      </main>
+      <Footer />
+    </div>
   )
 }
 
-export const Head = () => <title>Articles</title>
+export const Head = () => (
+  <>
+    <title>Debt News USA</title>
+    <Fonts />
+  </>
+)
