@@ -58,6 +58,22 @@
     color: $news-muted;
   }
 
+  .lang {
+    display: flex;
+    gap: 12px;
+    margin-left: auto;
+    font: 600 13px/1 $font-work;
+
+    a {
+      padding: 8px 0; // tap target
+      color: $news-accent;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
   .hero {
     background: #fff;
     padding: 32px 0 8px;

@@ -1,6 +1,8 @@
 // Page shape produced by src/markdown.ts from content/<slug>.md.
 // A body item is a paragraph, an array of lines rendered with no gap between them (bullets), or an image.
 
+import type { Alternate, Locale } from "./i18n"
+
 export interface Img { img: string; alt: string }
 export type BodyItem = string | string[] | Img
 
@@ -24,4 +26,6 @@ export interface Variant {
   intro: BodyItem[]
   sections: Section[]
   more?: Teaser[]
+  locale?: Locale
+  alternates?: Alternate[] // every language this page exists in, including itself
 }

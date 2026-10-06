@@ -5,7 +5,8 @@ import type { BodyItem, Img, Section, Variant } from "./content"
 // Image on its own line: ![alt](images/x.png), path relative to content/. First one right under the # title = hero.
 // ponytail: no inline markdown (bold/links); add `marked` if writers need it.
 export function parseArticle(slug: string, md: string): Variant | null {
-  const [head, ...rest] = md.replace(/\r\n/g, "\n").split(/^## /m)
+  // <!-- ... --> lines are comments, not content
+  const [head, ...rest] = md.replace(/\r\n/g, "\n").replace(/^<!--.*-->[ \t]*$/gm, "").split(/^## /m)
   const title = head.match(/^# (.+)$/m)?.[1].trim()
   if (!title) return null
 

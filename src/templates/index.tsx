@@ -1,25 +1,29 @@
 import * as React from "react"
-import type { PageProps } from "gatsby"
+import type { PageProps, HeadProps } from "gatsby"
 import "../styles/styles.scss"
 import type { Teaser } from "../content"
-import { Fonts, Footer, Header, NewsCards, useStateName } from "../components/shared"
+import { HeadCommon, Footer, Header, NewsCards, useStateName } from "../components/shared"
+import { ui } from "../i18n"
+import type { Alternate, Locale } from "../i18n"
 
-export default function Index({ pageContext: { articles } }: PageProps<object, { articles: Teaser[] }>) {
-  const state = useStateName()
+type Ctx = { articles: Teaser[]; locale: Locale; alternates: Alternate[] }
+
+export default function Index({ pageContext: { articles, locale, alternates } }: PageProps<object, Ctx>) {
+  const state = useStateName(locale)
   return (
     <div className="newsroom">
-      <Header />
+      <Header locale={locale} alternates={alternates} />
       <main className="home">
-        {articles.length > 0 && <NewsCards items={articles} state={state} />}
+        {articles.length > 0 && <NewsCards items={articles} state={state} locale={locale} />}
       </main>
-      <Footer />
+      <Footer locale={locale} />
     </div>
   )
 }
 
-export const Head = () => (
+export const Head = ({ pageContext: { locale, alternates } }: HeadProps<object, Ctx>) => (
   <>
-    <title>Debt News USA</title>
-    <Fonts />
+    <title>{ui[locale].brand}</title>
+    <HeadCommon locale={locale} alternates={alternates} />
   </>
 )
