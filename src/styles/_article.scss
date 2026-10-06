@@ -250,6 +250,11 @@
   }
 }
 
+// home page: header/footer line up with the wider card grid
+.wide .wrap {
+  max-width: 1040px;
+}
+
 // home page: the card grid is the page
 .home .news {
   max-width: 1040px;

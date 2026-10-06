@@ -28,11 +28,11 @@ export function useLocaleFromPath(): Locale {
   return locale
 }
 
-export const Header = ({ locale, alternates }: { locale: Locale; alternates: Alternate[] }) => {
+export const Header = ({ locale, alternates, wide }: { locale: Locale; alternates: Alternate[]; wide?: boolean }) => {
   const t = ui[locale]
   const others = alternates.filter(a => a.locale !== locale)
   return (
-    <header className="site-header">
+    <header className={wide ? "site-header wide" : "site-header"}>
       <div className="wrap">
         <p className="brand">{t.brand}</p>
         <p className="trust"><img src={verified18} width="18" height="18" alt="" />{t.trusted}</p>
@@ -46,10 +46,10 @@ export const Header = ({ locale, alternates }: { locale: Locale; alternates: Alt
   )
 }
 
-export const Footer = ({ locale }: { locale: Locale }) => {
+export const Footer = ({ locale, wide }: { locale: Locale; wide?: boolean }) => {
   const t = ui[locale]
   return (
-    <footer className="site-footer">
+    <footer className={wide ? "site-footer wide" : "site-footer"}>
       <div className="wrap">
         <p className="trust"><img src={verified18} width="18" height="18" alt="" />{t.secure}</p>
         <p className="trust"><img src={verified18} width="18" height="18" alt="" />{t.privacy}</p>

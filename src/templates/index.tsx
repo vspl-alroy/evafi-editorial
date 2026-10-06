@@ -11,12 +11,12 @@ type Ctx = { articles: Teaser[]; locale: Locale; alternates: Alternate[] }
 export default function Index({ pageContext: { articles, locale, alternates } }: PageProps<object, Ctx>) {
   const state = useStateName(locale)
   return (
-    <div className="newsroom">
-      <Header locale={locale} alternates={alternates} />
+    <div>
+      <Header locale={locale} alternates={alternates} wide />
       <main className="home">
         {articles.length > 0 && <NewsCards items={articles} state={state} locale={locale} />}
       </main>
-      <Footer locale={locale} />
+      <Footer locale={locale} wide />
     </div>
   )
 }
