@@ -5,7 +5,7 @@
   --ink: #111;
   background: #fff;
   color: var(--ink);
-  font: 18px/1.7 $font-sans;
+  font: 17px/1.65 $font-sans; // mobile first; md+ bumps below
 
   .wrap {
     max-width: 720px;
@@ -39,8 +39,10 @@
 
     .wrap {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
+      gap: 4px 16px;
       max-width: 1040px;
     }
   }
@@ -80,13 +82,21 @@
   }
 
   h2 {
-    font: 800 26px/1.25 $font-inter;
+    font: 800 22px/1.25 $font-inter;
     letter-spacing: -.01em;
     padding-left: 12px;
     border-left: 4px solid $news-accent;
   }
 
+  .cta {
+    padding: 0 4px;
+  }
+
   .cta a {
+    width: 100%;
+    justify-content: center;
+    height: auto;
+    min-height: 52px; // tap target
     border-radius: 6px;
     background: $news-accent;
     font: 700 16px/24px Inter, sans-serif;
@@ -149,10 +159,30 @@
     nav {
       color: #cfd3d8;
       font: 14px/1.4 $font-work;
+      gap: 0;
+
+      a {
+        padding: 12px 0; // tap target
+      }
     }
   }
 
   @include md {
+    font-size: 18px;
+    line-height: 1.7;
+
+    h2 {
+      font-size: 26px;
+    }
+
+    .cta a {
+      width: auto;
+    }
+
+    .site-footer nav a {
+      padding: 0;
+    }
+
     .news {
       display: grid;
       grid-template-columns: repeat(3, 1fr);

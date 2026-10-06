@@ -33,7 +33,7 @@ const Body = ({ items, tight, state }: { items: BodyItem[]; tight?: boolean; sta
   <div className={tight ? "body tight" : "body"}>
     {items.map((item, i) =>
       typeof item === "object" && !Array.isArray(item) ? (
-        <img key={i} className="body-img" src={item.img} alt={item.alt} />
+        <img key={i} className="body-img" src={item.img} alt={item.alt} loading="lazy" decoding="async" />
       ) : Array.isArray(item) ? (
         <div key={i}>{item.map(line => <p key={line}>{fillState(line, state)}</p>)}</div>
       ) : (
@@ -58,7 +58,7 @@ export default function Article({ pageContext: { title, date, hero: heroOverride
         <div className="wrap">
           <p className="dateline">WeeklyFinancialNews.com — {date ?? "September 30, 2026"}</p>
           <h1>{fillState(title, state)}</h1>
-          <img className="hero-img" src={heroOverride?.img ?? hero} alt={heroOverride?.alt ?? ""} />
+          <img className="hero-img" src={heroOverride?.img ?? hero} alt={heroOverride?.alt ?? ""} fetchPriority="high" decoding="async" />
         </div>
       </section>
 
@@ -85,7 +85,7 @@ export default function Article({ pageContext: { title, date, hero: heroOverride
           <h2>Todays Financial News</h2>
           {news.map((src, i) => (
             <article key={i}>
-              <div className="news-img"><img src={src} alt="" /></div>
+              <div className="news-img"><img src={src} alt="" loading="lazy" decoding="async" /></div>
               <h3>Content</h3>
               <p>Most people carrying at least $6,000 in eligible debt do — and income doesn't need to be verified just to check.</p>
             </article>
@@ -108,7 +108,8 @@ export const Head = ({ pageContext }: HeadProps<object, Variant>) => (
   <>
     <html lang="en" />
     <title>{fillState(pageContext.title, DEFAULT_STATE)}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700&family=Open+Sans:wght@400;700&family=Tinos:wght@700&family=Work+Sans:wght@400;600&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&family=Open+Sans:wght@400;700&family=Tinos:wght@700&family=Work+Sans:wght@400;600&display=swap" />
   </>
 )

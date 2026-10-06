@@ -1,5 +1,10 @@
 @use "tokens" as *;
 
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -25,7 +30,7 @@ a {
 .wrap {
     max-width: 720px;
     margin: 0 auto;
-    padding: 0 16px;
+    padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); // notches
 }
 
 h2 {
