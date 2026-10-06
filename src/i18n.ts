@@ -21,6 +21,9 @@ export interface UI {
   privacy: string
   footerLinks: string[]
   news: string
+  notFound: string
+  notFoundText: string
+  readThese: string
   cta: string
   dateline: string
   defaultDate: string
@@ -37,6 +40,9 @@ export const ui: Record<Locale, UI> = {
     privacy: "Your privacy matters",
     footerLinks: ["About", "Privacy Policy", "Terms of Use", "CA Privacy Policy", "Do Not Sell or Share", "E-Comm Consent", "Advertiser Disclosure"],
     news: "Todays Financial News",
+    notFound: "Page not found",
+    notFoundText: "We couldn't find the page you were looking for. It may have moved or the link may be wrong.",
+    readThese: "Articles you can read",
     cta: "Take EvaFi's Free Quiz",
     dateline: "WeeklyFinancialNews.com",
     defaultDate: "September 30, 2026",
@@ -52,6 +58,9 @@ export const ui: Record<Locale, UI> = {
     privacy: "Tu privacidad es importante",
     footerLinks: ["Acerca de", "Política de privacidad", "Términos de uso", "Política de privacidad de CA", "No vender ni compartir", "Consentimiento de comunicaciones electrónicas", "Divulgación del anunciante"],
     news: "Noticias financieras de hoy",
+    notFound: "Página no encontrada",
+    notFoundText: "No pudimos encontrar la página que buscabas. Puede que se haya movido o que el enlace sea incorrecto.",
+    readThese: "Artículos que puedes leer",
     cta: "Haz el cuestionario gratuito de EvaFi",
     dateline: "WeeklyFinancialNews.com",
     defaultDate: "30 de septiembre de 2026",

@@ -158,6 +158,23 @@
     }
   }
 
+  .not-found {
+    padding-top: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    h1 {
+      font: 800 clamp(28px, 6vw, 40px)/1.15 $font-inter;
+      letter-spacing: -.02em;
+    }
+
+    a {
+      color: $news-accent;
+      font-weight: 700;
+    }
+  }
+
   .home .news {
     border-top: 0; // no divider: nothing above it on the home page
     padding-top: 40px;
