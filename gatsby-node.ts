@@ -46,7 +46,7 @@ export const createPages: GatsbyNode["createPages"] = ({ actions }) => {
   actions.createPage({
     path: "/",
     component: path.resolve("src/templates/index.tsx"),
-    context: { articles: articles.map(({ slug, title }) => ({ slug, title })) },
+    context: { articles: articles.map(teaser) },
   })
   // "More news": the next MORE articles after this one (wrapping), so it's never the page being read.
   articles.forEach((variant, i) => {
