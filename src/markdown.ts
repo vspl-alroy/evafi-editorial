@@ -1,12 +1,22 @@
-import type { BodyItem, Img, Section, Variant } from "./content"
+import type { BodyItem, Btn, Img, Section, Variant } from "./content"
 
 // Subset of markdown: # title, text before first ## = intro, ## = section, "- " = bullets, "1. " = steps.
 // Optional "Date: October 6, 2026" line under the title sets the dateline.
 // Image on its own line: ![alt](images/x.png), path relative to content/. First one right under the # title = hero.
+// A link alone on a line anywhere else, [Text](https://...), renders as a button with that text.
+// Quiz link: the LAST line of the file, alone: "@quiz-link:https://..." (http/https only).
+//   It becomes the CTA button (and is removed from the text). No line = no button.
 // ponytail: no inline markdown (bold/links); add `marked` if writers need it.
 export function parseArticle(slug: string, md: string): Variant | null {
   // <!-- ... --> lines are comments, not content
-  const [head, ...rest] = md.replace(/\r\n/g, "\n").replace(/^<!--.*-->[ \t]*$/gm, "").split(/^## /m)
+  let text = md.replace(/\r\n/g, "\n").replace(/^<!--.*-->[ \t]*$/gm, "").trimEnd()
+  let cta: Variant["cta"]
+  const last = text.match(/(?:^|\n)[ \t]*(?:\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)|(https?:\/\/\S+))[ \t]*$/)
+  if (last) {
+    cta = { href: last[2] ?? last[3], label: last[1]?.trim() || undefined }
+    text = text.slice(0, last.index).trimEnd()
+  }
+  const [head, ...rest] = text.split(/^## /m)
   const title = head.match(/^# (.+)$/m)?.[1].trim()
   if (!title) return null
 
@@ -17,11 +27,17 @@ export function parseArticle(slug: string, md: string): Variant | null {
     const m = b.match(/^!\[(.*)\]\((.+)\)$/)
     return m ? { img: "/content/" + encodeURI(m[2].trim().replace(/^\.?\//, "")), alt: m[1] } : null
   }
+  const button = (b: string): Btn | null => {
+    const m = b.match(/^\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)$/)
+    return m ? { btn: m[1].trim(), href: m[2] } : null
+  }
   const body = (text: string): { body: BodyItem[]; steps?: string[] } => {
     const out: { body: BodyItem[]; steps?: string[] } = { body: [] }
     for (const b of blocks(text)) {
       const img = image(b)
+      const btn = button(b)
       if (img) out.body.push(img)
+      else if (btn) out.body.push(btn)
       else if (isList(b, /^\d+\. /)) out.steps = lines(b).map(l => l.replace(/^\d+\. /, ""))
       else if (isList(b, /^[-*] /)) out.body.push(lines(b).map(l => "•  " + l.slice(2)))
       else out.body.push(lines(b).join(" "))
@@ -36,8 +52,8 @@ export function parseArticle(slug: string, md: string): Variant | null {
   const date = head.match(/^Date:\s*(.+)$/im)?.[1].trim()
   const intro = body(head.replace(/^# .+$/m, "").replace(/^Date:.*$/im, "")).body
   const first = intro[0]
-  const hero = first && typeof first === "object" && !Array.isArray(first) ? (intro.shift() as Img) : undefined
-  return { slug, label: slug, newsroom: true, date, title, hero, intro, sections }
+  const hero = first && typeof first === "object" && "img" in first ? (intro.shift() as Img) : undefined
+  return { slug, label: slug, newsroom: true, date, cta, title, hero, intro, sections }
 }
 
 if (process.argv[1]?.endsWith("markdown.ts")) {
@@ -50,6 +66,19 @@ if (process.argv[1]?.endsWith("markdown.ts")) {
   console.assert(h.hero?.img === "/content/images/h%201.png" && h.hero.alt === "a b" && h.intro.length === 2)
   console.assert(typeof h.intro[1] === "object" && h.sections[0].body.length === 1)
   console.assert(parseArticle("x", "# T\n\nDate: May 1, 2026\n\nhi\n")?.date === "May 1, 2026")
+  const q = parseArticle("x", "# T\n\nhi\n\n## S\n\ntext\n\n[Start the quiz](https://example.com/quiz?a=1)\n")!
+  console.assert(q.cta?.href === "https://example.com/quiz?a=1" && q.cta.label === "Start the quiz", "markdown link")
+  console.assert(q.sections[0].body.length === 1 && q.sections[0].body[0] === "text", "link removed from text")
+  const bare = parseArticle("x", "# T\n\n## S\n\ntext\n\nhttps://example.com/q\n")!
+  console.assert(bare.cta?.href === "https://example.com/q" && bare.cta.label === undefined, "bare url")
+  console.assert(parseArticle("x", "# T\n\n## S\n\nsee [docs](https://a.com) for more\n")!.cta === undefined, "inline link is not a CTA")
+  console.assert(parseArticle("x", "# T\n\n## S\n\ntext\n\n[x](javascript:alert(1))\n")!.cta === undefined, "only http(s)")
+  const mid = parseArticle("x", "# T\n\nintro\n\n[Check if you qualify](https://a.com/q)\n\n## S\n\ntext\n\n[Go](https://b.com)\n\nmore text\n\n[Main quiz](https://c.com/quiz)\n")!
+  console.assert(JSON.stringify(mid.intro[1]) === '{"btn":"Check if you qualify","href":"https://a.com/q"}', "intro button")
+  console.assert(JSON.stringify(mid.sections[0].body) === '["text",{"btn":"Go","href":"https://b.com"},"more text"]', "section button")
+  console.assert(mid.cta?.href === "https://c.com/quiz", "last line is still the main CTA")
+  console.assert(parseArticle("x", "# T\n\nsee [here](https://a.com) now\n")!.intro[0] === "see [here](https://a.com) now", "inline link stays text")
+  console.assert(parseArticle("x", "# T\n\n[x](javascript:alert(1))\n")!.intro[0] === "[x](javascript:alert(1))", "only http(s)")
   console.assert(parseArticle("x", "no title") === null)
   console.log("ok")
 }

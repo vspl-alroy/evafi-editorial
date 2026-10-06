@@ -4,7 +4,8 @@
 import type { Alternate, Locale } from "./i18n"
 
 export interface Img { img: string; alt: string }
-export type BodyItem = string | string[] | Img
+export interface Btn { btn: string; href: string } // a link alone on a line: button with the writer's text
+export type BodyItem = string | string[] | Img | Btn
 
 export interface Section {
   h: string
@@ -22,6 +23,7 @@ export interface Variant {
   title: string
   hero?: Img
   date?: string // dateline text, e.g. "October 6, 2026"
+  cta?: { href: string; label?: string } // quiz link, from the last line of the markdown file
   newsroom?: boolean // news-site theme (markdown pages)
   intro: BodyItem[]
   sections: Section[]
