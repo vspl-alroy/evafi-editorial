@@ -10,8 +10,6 @@ The image above, placed right under the title, becomes the hero. Leave it out to
 
 A paragraph in a section. Use {State} anywhere to insert the reader's state.
 
-![An inline image, path is relative to the content folder](images/sample-inline.png)
-
 The same image file can be reused in any article with the same path.
 
 ## Your Options
@@ -22,8 +20,6 @@ Common paths people use:
 - Balance transfer cards move debt to a low-rate card.
 - Settlement programs negotiate with creditors.s
 
-[Take EvaFi's Free Quiz](https://evafi.relintex.dev/onboarding)
-
 ## What To Do Next
 
 Checking costs nothing. Here's how it works:
@@ -31,5 +27,3 @@ Checking costs nothing. Here's how it works:
 1. Answer a few quick questions.
 2. See whether you qualify.
 3. Review your options.
-
-[Take EvaFi's Free Quiz](https://evafi.relintex.dev/onboarding)
