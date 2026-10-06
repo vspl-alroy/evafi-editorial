@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Link } from "gatsby"
-import { SITE_URL, defaultLocale, localePath, ui } from "../i18n"
+import { SITE_URL, defaultLocale, localePath, locales, ui } from "../i18n"
 import type { Alternate, Locale } from "../i18n"
 import type { Teaser } from "../content"
 import hero from "../images/hero.png"
@@ -16,6 +16,16 @@ export function useStateName(locale: Locale) {
     if (q) setState(q)
   }, [])
   return state
+}
+
+// Locale from the URL (/es/...), for pages with no locale of their own such as the 404.
+export function useLocaleFromPath(): Locale {
+  const [locale, setLocale] = React.useState<Locale>(defaultLocale)
+  React.useEffect(() => {
+    const first = window.location.pathname.split("/")[1]
+    setLocale(locales.find(l => l === first) ?? defaultLocale)
+  }, [])
+  return locale
 }
 
 export const Header = ({ locale, alternates }: { locale: Locale; alternates: Alternate[] }) => {
@@ -50,9 +60,9 @@ export const Footer = ({ locale }: { locale: Locale }) => {
 }
 
 // "Todays Financial News" card grid. Used under each article and as the home page list.
-export const NewsCards = ({ items, state, locale }: { items: Teaser[]; state: string; locale: Locale }) => (
+export const NewsCards = ({ items, state, locale, title }: { items: Teaser[]; state: string; locale: Locale; title?: string }) => (
   <section className="news">
-    <h2>{ui[locale].news}</h2>
+    <h2>{title ?? ui[locale].news}</h2>
     {items.map(a => (
       <article key={a.slug}>
         <Link to={localePath(locale, a.slug)}>

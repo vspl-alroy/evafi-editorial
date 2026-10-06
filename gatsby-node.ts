@@ -55,6 +55,13 @@ export const createPages: GatsbyNode["createPages"] = ({ actions }) => {
   const alternatesFor = (slug?: string): Alternate[] =>
     locales.filter(l => byLocale.get(l)!.some(v => !slug || v.slug === slug)).map(l => ({ locale: l, path: localePath(l, slug) }))
 
+  // GitHub Pages serves /404.html for unknown URLs; it lists the articles of the visitor's language.
+  actions.createPage({
+    path: "/404.html",
+    component: path.resolve("src/templates/not-found.tsx"),
+    context: { byLocale: Object.fromEntries(locales.map(l => [l, byLocale.get(l)!.map(teaser)])) },
+  })
+
   for (const locale of locales) {
     const articles = byLocale.get(locale)!
     if (locale === defaultLocale || articles.length) {
