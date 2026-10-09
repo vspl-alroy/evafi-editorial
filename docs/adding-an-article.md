@@ -15,7 +15,7 @@ Example: a file called `how-to-get-out-of-debt.md` becomes `https://<site>/how-t
 
 ## 2. Write the article
 
-Copy `content/sample-article.md` as a starting point. The rules:
+Copy `content/credit-card-minimum-payments.md` as a starting point. The rules:
 
 | You want | You write | Notes |
 |---|---|---|
