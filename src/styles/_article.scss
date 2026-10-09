@@ -28,30 +28,6 @@
   }
 }
 
-.lang {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  gap: 16px;
-  font-size: 13px;
-  font-weight: 600;
-
-  a {
-    padding: 8px 0; // tap target
-    color: $way;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-
-  @include md {
-    right: 32px;
-  }
-}
-
 .rates {
   background: $ink;
   color: $subtle;

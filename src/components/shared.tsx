@@ -27,19 +27,13 @@ export function useLocaleFromPath(): Locale {
   return locale
 }
 
-export const Header = ({ locale, alternates }: { locale: Locale; alternates: Alternate[] }) => {
+export const Header = ({ locale }: { locale: Locale; alternates?: Alternate[] }) => { // language switcher removed for now; pages still pass alternates (hreflang)
   const t = ui[locale]
-  const others = alternates.filter(a => a.locale !== locale)
   return (
     <>
       <header className="mast">
         <div className="frame gutter mast-top">
           <p className="wordmark">{t.brand}<span>.</span></p>
-          {others.length > 0 && (
-            <nav className="lang" aria-label="Language">
-              {others.map(a => <a key={a.locale} href={a.path} hrefLang={a.locale} lang={a.locale}>{ui[a.locale].name}</a>)}
-            </nav>
-          )}
         </div>
       </header>
       <div className="rates" role="region" aria-label={t.statsLabel}>
