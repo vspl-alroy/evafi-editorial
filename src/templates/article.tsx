@@ -3,14 +3,13 @@ import type { HeadProps, PageProps } from "gatsby"
 import "../styles/styles.scss"
 import type { BodyItem, Variant } from "../content"
 import hero from "../images/hero.png"
-import verified24 from "../images/verified-24.svg"
 import { HeadCommon, Footer, Header, NewsCards, fillState, useStateName } from "../components/shared"
 import { excerpt } from "../content"
 import { defaultLocale, ui } from "../i18n"
-import divider from "../images/divider.svg"
 
-// Rendered width of article images: the 720px column minus the 24px gutters, or the screen minus gutters.
-const MAIN_SIZES = "(min-width: 720px) 672px, calc(100vw - 48px)"
+// Rendered width of the hero (frame minus gutters) or the screen minus gutters. Body images are narrower, so this over-fetches slightly.
+const BODY_SIZES = "(min-width: 720px) 640px, calc(100vw - 32px)"
+const MAIN_SIZES = "(min-width: 1040px) 1000px, calc(100vw - 32px)"
 
 const Body = ({ items, tight, state }: { items: BodyItem[]; tight?: boolean; state: string }) => (
   <div className={tight ? "body tight" : "body"}>
@@ -18,7 +17,7 @@ const Body = ({ items, tight, state }: { items: BodyItem[]; tight?: boolean; sta
       typeof item === "object" && "btn" in item ? (
         <div key={i} className="cta"><a href={item.href}>{fillState(item.btn, state)}</a></div>
       ) : typeof item === "object" && "img" in item ? (
-        <img key={i} className="body-img" src={item.img} srcSet={item.srcSet} sizes={item.srcSet ? MAIN_SIZES : undefined} width={item.width} height={item.height} alt={item.alt} loading="lazy" decoding="async" />
+        <img key={i} className="body-img" src={item.img} srcSet={item.srcSet} sizes={item.srcSet ? BODY_SIZES : undefined} width={item.width} height={item.height} alt={item.alt} loading="lazy" decoding="async" />
       ) : Array.isArray(item) ? (
         <div key={i}>{item.map(line => <p key={line}>{fillState(line, state)}</p>)}</div>
       ) : (
@@ -28,43 +27,79 @@ const Body = ({ items, tight, state }: { items: BodyItem[]; tight?: boolean; sta
   </div>
 )
 
+const fill = (s: string, vars: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (m, k) => String(vars[k] ?? m))
+const words = (items: BodyItem[]) => items.reduce((n, b) => n + (typeof b === "string" ? b.split(/\s+/).length : Array.isArray(b) ? b.join(" ").split(/\s+/).length : 0), 0)
+
+const Toc = ({ sections, title }: { sections: Variant["sections"]; title: string }) => (
+  <nav className="toc" aria-label={title}>
+    <h2>{title}</h2>
+    <ol>{sections.map((s, i) => <li key={s.h}><a href={`#p${i + 1}`}>{s.h}</a></li>)}</ol>
+  </nav>
+)
+
 export default function Article({ pageContext: { title, date, hero: heroOverride, intro, sections, cta, more, locale = defaultLocale, alternates = [] } }: PageProps<object, Variant>) {
   const state = useStateName(locale)
   const t = ui[locale]
+  // first plain paragraph is the standfirst under the headline; the rest is the body
+  const di = intro.findIndex(b => typeof b === "string")
+  const dek = di >= 0 ? (intro[di] as string) : undefined
+  const lead = intro.filter((_, i) => i !== di)
+  const minutes = Math.max(1, Math.round((words(intro) + sections.reduce((n, s) => n + words(s.body) + (s.steps?.join(" ").split(/\s+/).length ?? 0), 0)) / 220))
+  const ctaLabel = cta?.label ?? t.cta
   return (
     <div>
       <Header locale={locale} alternates={alternates} />
 
-      <section className="hero">
-        <div className="wrap">
-          <p className="dateline">{t.dateline} — {date ?? t.defaultDate}</p>
+      <main className="frame gutter">
+        <div className="head">
+          <div className="ad-row"><span className="ad-label">{t.ad}</span></div>
           <h1>{fillState(title, state)}</h1>
-          <img className="hero-img" src={heroOverride?.img ?? hero} srcSet={heroOverride?.srcSet} sizes={heroOverride?.srcSet ? MAIN_SIZES : undefined} alt={heroOverride?.alt ?? ""} fetchPriority="high" decoding="async" />
-          <dl className="byline">
-            <div><dt>{t.author}</dt><dd>{t.authorName}</dd></div>
-            <div><dt>{t.updated}</dt><dd>{t.updatedValue}</dd></div>
-          </dl>
+          {dek && <p className="dek">{fillState(dek, state)}</p>}
+          <div className="byline">
+            <span>{fill(t.readTime, { n: minutes })}</span>
+            <span>{date ?? t.defaultDate}</span>
+            <span>{t.authorName}</span>
+          </div>
         </div>
-      </section>
 
-      <div className="process">
-        <img src={divider} width="375" height="1" alt="" />
-        <ul>
-          {t.steps.map(s => <li key={s}><img src={verified24} width="24" height="24" alt="" />{s}</li>)}
-        </ul>
-        <img src={divider} width="375" height="1" alt="" />
-      </div>
+        <figure className="photo">
+          <img src={heroOverride?.img ?? hero} srcSet={heroOverride?.srcSet} sizes={heroOverride?.srcSet ? MAIN_SIZES : undefined} width={heroOverride?.width} height={heroOverride?.height} alt={heroOverride?.alt ?? ""} fetchPriority="high" decoding="async" />
+        </figure>
 
-      <main className="wrap content">
-        <Body items={intro} state={state} />
-        {sections.map(sec => (
-          <section key={sec.h}>
-            <h2>{sec.h}</h2>
-            <Body items={sec.body} tight={sec.tight} state={state} />
-            {sec.steps && <ol>{sec.steps.map(s => <li key={s}>{s}</li>)}</ol>}
-          </section>
-        ))}
-        {cta && <div className="cta"><a href={cta.href}>{cta.label ?? t.cta}</a></div>}
+        <div className="layout">
+          <article className="article">
+            {sections.length > 1 && <div className="toc-inline"><Toc sections={sections} title={t.toc} /></div>}
+            <Body items={lead} state={state} />
+            {sections.map((sec, i) => (
+              <section key={sec.h} className="q" id={`p${i + 1}`}>
+                <span className="q-num">{fill(t.part, { i: i + 1, n: sections.length })}</span>
+                <h2>{sec.h}</h2>
+                <Body items={sec.body} tight={sec.tight} state={state} />
+                {sec.steps && <ol>{sec.steps.map(s => <li key={s}>{s}</li>)}</ol>}
+              </section>
+            ))}
+            {cta && (
+              <a className="next" href={cta.href}>
+                <p className="k">{t.nextStep}</p>
+                <p className="h">{ctaLabel}</p>
+                <span className="go">→</span>
+              </a>
+            )}
+          </article>
+
+          <aside className="rail">
+            <div className="rail-sticky">
+              {sections.length > 1 && <Toc sections={sections} title={t.toc} />}
+              {cta && (
+                <a className="rail-next" href={cta.href}>
+                  <p className="k">{t.nextStep}</p>
+                  <p className="h">{ctaLabel}</p>
+                  <span className="go">→</span>
+                </a>
+              )}
+            </div>
+          </aside>
+        </div>
 
         {more && more.length > 0 && <NewsCards items={more} state={state} locale={locale} />}
       </main>

@@ -16,9 +16,14 @@ export interface Alternate { locale: Locale; path: string }
 export interface UI {
   name: string // language name in its own language, for the switcher
   brand: string
-  trusted: string
-  secure: string
-  privacy: string
+  stats: { k: string; v: string; src: string }[] // "By the numbers" strip under the masthead
+  statsLabel: string
+  ad: string
+  readTime: string // {n} = minutes
+  part: string // {i} of {n}
+  toc: string
+  nextStep: string
+  disclosure: string
   footerLinks: string[]
   author: string
   authorName: string
@@ -31,19 +36,27 @@ export interface UI {
   readThese: string
   goHome: string
   cta: string
-  dateline: string
   defaultDate: string
   defaultState: string // replaces {State} until ?state= is read
-  steps: string[]
 }
 
 export const ui: Record<Locale, UI> = {
   en: {
     name: "English",
     brand: "Debt News USA",
-    trusted: "Trusted source of news",
-    secure: "Secure & encrypted",
-    privacy: "Your privacy matters",
+    statsLabel: "By the numbers",
+    stats: [
+      { k: "Total U.S. card debt", v: "$1.252T", src: "NY Fed, Q1 2026" },
+      { k: "Avg. balance per cardholder", v: "$7,886", src: "LendingTree, Q3 2025" },
+      { k: "Avg. APR, accruing balances", v: "22.15%", src: "Federal Reserve, Q2 2026" },
+      { k: "Balances 30+ days delinquent", v: "2.92%", src: "NY Fed, Q1 2026" },
+    ],
+    ad: "Advertisement",
+    readTime: "{n} min read",
+    part: "Part {i} of {n}",
+    toc: "In this article",
+    nextStep: "Next step",
+    disclosure: "This is paid advertising content from EvaFi, a service that connects people with debt consolidation options through its financial partners. This content is for general information only and is not financial, legal or tax advice. Rates, terms and eligibility vary.",
     footerLinks: ["About", "Privacy Policy", "Terms of Use", "CA Privacy Policy", "Do Not Sell or Share", "E-Comm Consent", "Advertiser Disclosure"],
     author: "Author",
     authorName: "EvaFi Editorial team",
@@ -56,18 +69,26 @@ export const ui: Record<Locale, UI> = {
     readThese: "Articles you can read",
     goHome: "Back to the home page",
     cta: "Take EvaFi's Free Quiz",
-    dateline: "WeeklyFinancialNews.com",
     defaultDate: "September 30, 2026",
     defaultState: "your state",
-    steps: ["Answer a few questions", "See your results", "Learn about your options"],
   },
   // TODO: have a native speaker review these UI strings.
   es: {
     name: "Español",
     brand: "Debt News USA",
-    trusted: "Fuente de noticias confiable",
-    secure: "Seguro y cifrado",
-    privacy: "Tu privacidad es importante",
+    statsLabel: "En cifras",
+    stats: [
+      { k: "Deuda total de tarjetas en EE. UU.", v: "$1.252 billones", src: "Fed de NY, 1T 2026" },
+      { k: "Saldo promedio por titular", v: "$7,886", src: "LendingTree, 3T 2025" },
+      { k: "APR promedio, saldos con intereses", v: "22.15%", src: "Reserva Federal, 2T 2026" },
+      { k: "Saldos con más de 30 días de atraso", v: "2.92%", src: "Fed de NY, 1T 2026" },
+    ],
+    ad: "Publicidad",
+    readTime: "{n} min de lectura",
+    part: "Parte {i} de {n}",
+    toc: "En este artículo",
+    nextStep: "Siguiente paso",
+    disclosure: "Este es contenido publicitario pagado de EvaFi, un servicio que conecta a las personas con opciones de consolidación de deudas a través de sus socios financieros. Este contenido es solo informativo y no constituye asesoría financiera, legal ni fiscal. Las tasas, los términos y la elegibilidad varían.",
     footerLinks: ["Acerca de", "Política de privacidad", "Términos de uso", "Política de privacidad de CA", "No vender ni compartir", "Consentimiento de comunicaciones electrónicas", "Divulgación del anunciante"],
     author: "Autor",
     authorName: "Equipo editorial de EvaFi",
@@ -80,9 +101,7 @@ export const ui: Record<Locale, UI> = {
     readThese: "Artículos que puedes leer",
     goHome: "Volver a la página de inicio",
     cta: "Haz el cuestionario gratuito de EvaFi",
-    dateline: "WeeklyFinancialNews.com",
     defaultDate: "30 de septiembre de 2026",
     defaultState: "tu estado",
-    steps: ["Responde unas preguntas", "Mira tus resultados", "Conoce tus opciones"],
   },
 }

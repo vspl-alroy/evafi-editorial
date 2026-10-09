@@ -4,7 +4,6 @@ import { SITE_URL, defaultLocale, localePath, locales, ui } from "../i18n"
 import type { Alternate, Locale } from "../i18n"
 import type { Teaser } from "../content"
 import hero from "../images/hero.png"
-import verified18 from "../images/verified-18.svg"
 
 export const fillState = (s: string, state: string) => s.replaceAll("{State}", state)
 
@@ -28,32 +27,40 @@ export function useLocaleFromPath(): Locale {
   return locale
 }
 
-export const Header = ({ locale, alternates, wide }: { locale: Locale; alternates: Alternate[]; wide?: boolean }) => {
+export const Header = ({ locale, alternates }: { locale: Locale; alternates: Alternate[] }) => {
   const t = ui[locale]
   const others = alternates.filter(a => a.locale !== locale)
   return (
-    <header className={wide ? "site-header wide" : "site-header"}>
-      <div className="wrap">
-        <p className="brand">{t.brand}</p>
-        <p className="trust"><img src={verified18} width="18" height="18" alt="" />{t.trusted}</p>
-        {others.length > 0 && (
-          <nav className="lang" aria-label="Language">
-            {others.map(a => <a key={a.locale} href={a.path} hrefLang={a.locale} lang={a.locale}>{ui[a.locale].name}</a>)}
-          </nav>
-        )}
+    <>
+      <header className="mast">
+        <div className="frame gutter mast-top">
+          <p className="wordmark">{t.brand}<span>.</span></p>
+          {others.length > 0 && (
+            <nav className="lang" aria-label="Language">
+              {others.map(a => <a key={a.locale} href={a.path} hrefLang={a.locale} lang={a.locale}>{ui[a.locale].name}</a>)}
+            </nav>
+          )}
+        </div>
+      </header>
+      <div className="rates" role="region" aria-label={t.statsLabel}>
+        <div className="frame gutter rates-inner">
+          <span className="rates-label">{t.statsLabel}</span>
+          {t.stats.map(s => <span key={s.k} className="rate"><span className="k">{s.k}</span><b>{s.v}</b><span className="src">{s.src}</span></span>)}
+        </div>
       </div>
-    </header>
+    </>
   )
 }
 
-export const Footer = ({ locale, wide }: { locale: Locale; wide?: boolean }) => {
+export const Footer = ({ locale }: { locale: Locale }) => {
   const t = ui[locale]
   return (
-    <footer className={wide ? "site-footer wide" : "site-footer"}>
-      <div className="wrap">
-        <p className="trust"><img src={verified18} width="18" height="18" alt="" />{t.secure}</p>
-        <p className="trust"><img src={verified18} width="18" height="18" alt="" />{t.privacy}</p>
+    <footer className="foot">
+      <div className="frame gutter">
+        <p className="wordmark">{t.brand}<span>.</span></p>
         <nav>{t.footerLinks.map(l => <a key={l} href="#">{l}</a>)}</nav>
+        <p className="disclosure"><b>{t.ad}.</b> {t.disclosure}</p>
+        <p className="disclosure">© {new Date().getFullYear()} {t.brand}</p>
       </div>
     </footer>
   )
@@ -106,7 +113,7 @@ export const HeadCommon = ({ locale, alternates, seo }: { locale: Locale; altern
       {alternates.length > 1 && x && <link rel="alternate" hrefLang="x-default" href={SITE_URL + x.path} />}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&family=Open+Sans:wght@400;700&family=Tinos:wght@700&family=Work+Sans:wght@400;600&display=swap" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400..800;1,6..72,400..600&display=swap" />
     </>
   )
 }

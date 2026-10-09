@@ -12,8 +12,8 @@ html {
 
 body {
   background: #fff;
-  color: $ink;
-  font: 16px/24px $font-sans;
+  color: $text;
+  font: 16px/1.5 $font-sans;
   overflow-wrap: break-word;
 }
 
@@ -32,6 +32,19 @@ a {
   margin: 0 auto;
   // safe-area: keep text clear of phone notches
   padding: 0 max($gutter, env(safe-area-inset-right)) 0 max($gutter, env(safe-area-inset-left));
+}
+
+.frame {
+  max-width: $bp-lg;
+  margin: 0 auto;
+}
+
+.gutter {
+  padding-inline: max($gutter, env(safe-area-inset-right)) max($gutter, env(safe-area-inset-left));
+
+  @include md {
+    padding-inline: 32px;
+  }
 }
 
 h2 {

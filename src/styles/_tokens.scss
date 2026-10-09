@@ -1,22 +1,28 @@
-// Design tokens (from the Figma design: "EvaFi Workspace V3").
-$ink: #212121;
-$muted: #616161;
-$line: #bdbdbd;
-$blue-800: #0a3d6b;
-$blue-600: #126dbf;
-$hero-bg: #fafdff;
-$red-100: #ffc5c7;
+// Design tokens (advertorial design: Libre Franklin + Newsreader).
+$ink: #111214;
+$text: #24262a;
+$muted: #62666d;
+$rule: #e2e3e6;
+$subtle: #f4f4f5;
+$trap: #c8302f; // accent red
+$way: #2f62b0; // links and buttons
+$way-dark: #234b88;
 
-$font-sans: "Open Sans", system-ui, sans-serif;
-$font-work: "Work Sans", sans-serif;
-$font-inter: Inter, sans-serif;
-$font-serif: Tinos, "Times New Roman", serif;
+$font-sans: "Libre Franklin", "Helvetica Neue", Arial, system-ui, sans-serif;
+$font-serif: Newsreader, "Iowan Old Style", Georgia, "Times New Roman", serif;
 
-$gutter: 24px;
+$gutter: 16px;
 $bp-md: 720px;
+$bp-lg: 1040px;
 
 @mixin md {
   @media (min-width: $bp-md) {
+    @content;
+  }
+}
+
+@mixin lg {
+  @media (min-width: $bp-lg) {
     @content;
   }
 }
