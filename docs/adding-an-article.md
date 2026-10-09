@@ -3,6 +3,8 @@
 You don't need to code. An article is one text file (Markdown) plus its images, added on GitHub.
 Once it is merged, the site rebuilds itself and the article is live at `https://<site>/<file-name>/`, usually within a couple of minutes.
 
+**What goes inside the file, step by step, with the real article as example: [writing-the-article-md.md](writing-the-article-md.md).**
+
 Example: a file called `how-to-get-out-of-debt.md` becomes `https://<site>/how-to-get-out-of-debt/`.
 
 ## 1. Pick the file name (this is the web address)
@@ -13,7 +15,7 @@ Example: a file called `how-to-get-out-of-debt.md` becomes `https://<site>/how-t
 
 ## 2. Write the article
 
-Copy `content/sample-article.md` as a starting point. The rules:
+Copy `content/credit-card-minimum-payments.md` as a starting point. The rules:
 
 | You want | You write | Notes |
 |---|---|---|
@@ -29,8 +31,40 @@ Copy `content/sample-article.md` as a starting point. The rules:
 | **Reader's state** | `{State}` | Replaced by the reader's state, e.g. "Is {State}'s trap catching up to you?". See "State" below. |
 | **Main quiz button** | `[Take EvaFi's Free Quiz](https://evafi.relintex.dev/onboarding)` | **Last line of the file**, alone. This is the big button at the end of the article. |
 
-Things that do **not** work (they show up exactly as typed): bold, italics, headings smaller than `##`, tables, and links inside a sentence.
-Write a link as a button on its own line instead.
+Inside any sentence you can use `**bold**` and `[link text](https://example.com)` (or `[text](#sources)` to jump within the page).
+Things that do **not** work (they show up exactly as typed): italics, headings smaller than `##`, tables.
+
+### Extra header lines (optional, under the headline)
+
+| Line | Shows |
+|---|---|
+| `Kicker: Explainer · Credit Cards` | Small red label above the headline |
+| `Byline: 6 min read \| Data: Fed, NY Fed · [Sources](#sources)` | The line under the standfirst, parts split by ` \| ` |
+| `Description: ...` | Text Google shows under the title (default: first paragraph) |
+| `Tracking: da101_credit_cards` | Name used in analytics events (default: the file name) |
+
+The **first paragraph** after the top image is the large standfirst under the headline.
+A caption under an image: put it on the line right below the image line, `Caption text | Credit`.
+
+### Boxes
+
+A box starts with `::: name` and ends with a line containing only `:::`. See `content/credit-card-minimum-payments.md` for every one of them:
+
+| Box | Use |
+|---|---|
+| `::: takeaways The short version` + `- ` lines | Grey summary box (put it before the first `##`) |
+| `::: stat` | First line `$146 \| of your $224 minimum`, next line the caption |
+| `::: statement` | The card-statement illustration (`Alt:`, `Balance:`, `Minimum:`, `APR:`, `Caption:`, rows `- a \| **b** \| c`) |
+| `::: tip Worth checking` | Grey tip box with a link |
+| `::: ways` + `- **Lead.** text` lines | List of options |
+| `::: check Title` | The 3-step check: intro line, `- Title \| text` lines (`- ! Title` shows it in red), last line the link |
+| `::: next Next step` | Dark call-to-action: headline, description, `[Button text](https://...)` |
+| `::: soft`, `::: related` | Small paragraphs after the call-to-action |
+| `::: method How we calculated this` | Paragraph + `- ` list of sources (numbered) |
+| `::: rail Next step` | The call-to-action in the side column: headline, `[Button text](https://...)` |
+
+`check`, `next`, `soft`, `related`, `method` and `rail` always appear after the last section, in the order written.
+Links inside `tip`, `ways`, `check`, `next`, `soft` and `rail` are tracked as calls to action.
 
 ### The main quiz button
 
@@ -73,7 +107,7 @@ After it is live, open the address and check:
 - [ ] Every image appears.
 - [ ] The buttons go to the right quiz link.
 - [ ] The numbered steps appear where you expect (at the end of their section).
-- [ ] The article shows on the home page and in the "Todays Financial News" cards of other articles.
+- [ ] The article shows on the home page.
 
 If something is off, edit the file on GitHub (pencil icon) and propose the change again.
 
@@ -96,5 +130,5 @@ Compliance note: articles contain savings figures, testimonials and credit-score
 | The article is not on the site | File is not in `content/` (or `content/es/`), name has capitals/spaces/accents, or the pull request is not merged yet. |
 | No button at the end | The last line is not a link, or it doesn't start with `https://`. |
 | A picture is missing | The image file wasn't uploaded to `content/images/`, or the name in the article doesn't match exactly (including capitals and `.png` vs `.jpg`). |
-| Text shows `[words](https://...)` | A link inside a sentence isn't supported. Put it on its own line as a button. |
+| Text shows `[words](https://...)` | The link is not `https://` (or `#`), or has a space in the address. |
 | Page shows the default date | Add a `Date:` line under the headline. |

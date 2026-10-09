@@ -1,4 +1,4 @@
-import type { BodyItem, Btn, Img, Section, Variant } from "./content"
+import type { BodyItem, Box, Cta, Btn, Img, Section, Variant } from "./content"
 
 // Subset of markdown: # title, text before first ## = intro, ## = section, "- " = bullets, "1. " = steps.
 // Optional "Date: October 6, 2026" line under the title sets the dateline.
@@ -6,7 +6,11 @@ import type { BodyItem, Btn, Img, Section, Variant } from "./content"
 // A link alone on a line anywhere else, [Text](https://...), renders as a button with that text.
 // Quiz link: the LAST line of the file, alone: "@quiz-link:https://..." (http/https only).
 //   It becomes the CTA button (and is removed from the text). No line = no button.
-// ponytail: no inline markdown (bold/links); add `marked` if writers need it.
+// Optional header lines under the title: Date, Kicker, Byline (parts split by " | "), Description, Tracking.
+// Inline text may use **bold** and [links](https://... or #anchor); they render in the template, the parser keeps raw text.
+// An image block may carry a caption on the next line: "Caption text | Credit".
+// Boxes: "::: name optional heading" ... ":::" (see docs/adding-an-article.md): takeaways, stat, statement, tip, ways,
+//   check, next, rail, soft, related, method. check/next/soft/related/method close the article, rail is the side CTA.
 export function parseArticle(slug: string, md: string): Variant | null {
   // <!-- ... --> lines are comments, not content
   let text = md.replace(/\r\n/g, "\n").replace(/^<!--.*-->[ \t]*$/gm, "").trimEnd()
@@ -20,12 +24,55 @@ export function parseArticle(slug: string, md: string): Variant | null {
   const title = head.match(/^# (.+)$/m)?.[1].trim()
   if (!title) return null
 
-  const blocks = (text: string) => text.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean)
+  // blocks are separated by blank lines; a "::: name" ... ":::" box stays one block
+  const blocks = (text: string) => {
+    const out: string[] = []
+    let cur: string[] = []
+    let inBox = false
+    const flush = () => { const b = cur.join("\n").trim(); if (b) out.push(b); cur = [] }
+    for (const l of text.split("\n")) {
+      if (!inBox && /^:::\s*\S/.test(l.trim())) { flush(); inBox = true; cur.push(l.trim()) }
+      else if (inBox && l.trim() === ":::") { cur.push(":::"); flush(); inBox = false }
+      else if (!inBox && !l.trim()) flush()
+      else cur.push(inBox ? l.trim() : l)
+    }
+    flush()
+    return out
+  }
   const lines = (b: string) => b.split("\n").map(l => l.trim())
   const isList = (b: string, re: RegExp) => lines(b).every(l => re.test(l))
   const image = (b: string): Img | null => {
-    const m = b.match(/^!\[(.*)\]\((.+)\)$/)
-    return m ? { img: "/content/" + encodeURI(m[2].trim().replace(/^\.?\//, "")), alt: m[1] } : null
+    const [first, cap, ...more] = lines(b)
+    const m = more.length === 0 && first.match(/^!\[(.*)\]\((.+)\)$/)
+    if (!m) return null
+    const [caption, credit] = (cap ?? "").split(/\s+\|\s+/)
+    return { img: "/content/" + encodeURI(m[2].trim().replace(/^\.?\//, "")), alt: m[1], ...(caption && { caption }), ...(credit && { credit }) }
+  }
+  const box = (b: string): Box | null => {
+    const m = b.match(/^::: *(\S+)[ \t]*(.*)\n([\s\S]*)\n:::$/)
+    if (!m) return null
+    const [, name, arg, inner] = m
+    const ls = lines(inner).filter(Boolean)
+    const items = ls.filter(l => l.startsWith("- ")).map(l => l.slice(2))
+    const para = ls.filter(l => !l.startsWith("- "))
+    const kv = (k: string) => ls.find(l => l.toLowerCase().startsWith(k.toLowerCase() + ":"))?.slice(k.length + 1).trim() ?? ""
+    const link = para.join(" ").match(/\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/)
+    switch (name) {
+      case "takeaways": return { box: "takeaways", h: arg, items }
+      case "stat": { const [num, of] = (para[0] ?? "").split(/\s+\|\s+/); return { box: "stat", num, of: of ?? "", cap: para.slice(1).join(" ") } }
+      case "statement": return { box: "statement", alt: kv("Alt"), balance: kv("Balance"), minimum: kv("Minimum"), apr: kv("APR"), caption: kv("Caption"), rows: items.map(r => r.split(/\s+\|\s+/)) }
+      case "tip": return { box: "tip", h: arg, text: para.join(" ") }
+      case "ways": return { box: "ways", items }
+      case "check": {
+        const steps = items.map(i => { const [h, ...t] = i.replace(/^!\s*/, "").split(/\s+\|\s+/); return { h, text: t.join(" | "), flag: i.startsWith("!") } })
+        const after = ls.slice(ls.reduce((n, l, i) => (l.startsWith("- ") ? i : n), -1) + 1)
+        return { box: "check", h: arg, p: para[0] ?? "", steps, cta: steps.length ? after.join(" ") : "" }
+      }
+      case "next": case "rail": return { box: name, k: arg, h: para[0] ?? "", d: para.length > 2 ? para[1] : "", go: link?.[1] ?? "", href: link?.[2] ?? "" }
+      case "soft": case "related": return { box: name, text: para.join(" ") }
+      case "method": return { box: "method", h: arg, text: para.join(" "), items }
+    }
+    return null
   }
   const button = (b: string): Btn | null => {
     const m = b.match(/^\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)$/)
@@ -36,7 +83,9 @@ export function parseArticle(slug: string, md: string): Variant | null {
     for (const b of blocks(text)) {
       const img = image(b)
       const btn = button(b)
-      if (img) out.body.push(img)
+      const bx = b.startsWith(":::") ? box(b) : null
+      if (bx) out.body.push(bx)
+      else if (img) out.body.push(img)
       else if (btn) out.body.push(btn)
       else if (isList(b, /^\d+\. /)) out.steps = lines(b).map(l => l.replace(/^\d+\. /, ""))
       else if (isList(b, /^[-*] /)) out.body.push(lines(b).map(l => "•  " + l.slice(2)))
@@ -45,15 +94,30 @@ export function parseArticle(slug: string, md: string): Variant | null {
     return out
   }
 
+  // boxes that close the article move out of the last section
+  const CLOSING = ["check", "next", "soft", "related", "method", "rail"]
+  const isClosing = (i: BodyItem) => typeof i === "object" && !Array.isArray(i) && "box" in i && CLOSING.includes(i.box)
   const sections: Section[] = rest.map(s => {
     const [h, ...r] = s.split("\n")
     return { h: h.trim(), ...body(r.join("\n")) }
   })
-  const date = head.match(/^Date:\s*(.+)$/im)?.[1].trim()
-  const intro = body(head.replace(/^# .+$/m, "").replace(/^Date:.*$/im, "")).body
+  const outro = sections.flatMap(s => s.body.filter(isClosing)) as Box[]
+  for (const s of sections) s.body = s.body.filter(i => !isClosing(i))
+  const introBoxes = (items: BodyItem[]) => items.filter(isClosing) as Box[]
+  const field = (k: string) => head.match(new RegExp(`^${k}:[ \\t]*(.+)$`, "im"))?.[1].trim()
+  const date = field("Date")
+  const kicker = field("Kicker")
+  const byline = field("Byline")?.split(/\s+\|\s+/)
+  const description = field("Description")
+  const tracking = field("Tracking")
+  const intro = body(head.replace(/^# .+$/m, "").replace(/^(Date|Kicker|Byline|Description|Tracking):.*$/gim, "")).body
+  outro.unshift(...introBoxes(intro))
+  for (let i = intro.length - 1; i >= 0; i--) if (isClosing(intro[i])) intro.splice(i, 1)
+  const ri = outro.findIndex(i => i.box === "rail")
+  const rail = ri >= 0 ? (outro.splice(ri, 1)[0] as Cta) : undefined
   const first = intro[0]
   const hero = first && typeof first === "object" && "img" in first ? (intro.shift() as Img) : undefined
-  return { slug, label: slug, date, cta, title, hero, intro, sections }
+  return { slug, label: slug, date, kicker, byline, description, tracking, cta, title, hero, intro, sections, outro: outro.length ? outro : undefined, rail }
 }
 
 if (process.argv[1]?.endsWith("markdown.ts")) {
@@ -79,6 +143,14 @@ if (process.argv[1]?.endsWith("markdown.ts")) {
   console.assert(mid.cta?.href === "https://c.com/quiz", "last line is still the main CTA")
   console.assert(parseArticle("x", "# T\n\nsee [here](https://a.com) now\n")!.intro[0] === "see [here](https://a.com) now", "inline link stays text")
   console.assert(parseArticle("x", "# T\n\n[x](javascript:alert(1))\n")!.intro[0] === "[x](javascript:alert(1))", "only http(s)")
+  const bx = parseArticle("x", "# T\n\nKicker: A · B\nByline: 6 min | Data: **x** · [S](#s)\n\n![a](images/h.png)\nCap text | Credit\n\ndek\n\n::: takeaways Short\n- one **b**\n- two\n:::\n\n## Q\n\n::: stat\n$1 | of $2\nwhy\n:::\n\n::: check Try\nIntro\n- Lower | ok\n- ! Same | hmm\nIf [x](https://a.com)\n:::\n\n::: next Next step\nHead\nDesc\n[Go](https://a.com/c)\n:::\n\n::: rail Next step\nHead\n[Go](https://a.com/c)\n:::\n")!
+  console.assert(bx.kicker === "A · B" && bx.byline?.length === 2 && bx.hero?.caption === "Cap text" && bx.hero.credit === "Credit", "header lines + caption")
+  console.assert(JSON.stringify(bx.intro[1]) === '{"box":"takeaways","h":"Short","items":["one **b**","two"]}', "takeaways box")
+  console.assert(bx.sections[0].body.length === 1 && (bx.sections[0].body[0] as { box: string }).box === "stat", "closing boxes leave the section")
+  console.assert(bx.outro?.map(o => o.box).join() === "check,next" && bx.rail?.href === "https://a.com/c" && bx.rail.d === "", "outro + rail")
+  const ck = bx.outro![0] as Extract<Box, { box: "check" }>
+  console.assert(ck.steps.length === 2 && ck.steps[1].flag && ck.cta === "If [x](https://a.com)", "check box")
+  console.assert((bx.outro![1] as Cta).d === "Desc", "next box")
   console.assert(parseArticle("x", "no title") === null)
   console.log("ok")
 }

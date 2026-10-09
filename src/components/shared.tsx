@@ -4,7 +4,6 @@ import { SITE_URL, defaultLocale, localePath, locales, ui } from "../i18n"
 import type { Alternate, Locale } from "../i18n"
 import type { Teaser } from "../content"
 import hero from "../images/hero.png"
-import verified18 from "../images/verified-18.svg"
 
 export const fillState = (s: string, state: string) => s.replaceAll("{State}", state)
 
@@ -28,32 +27,52 @@ export function useLocaleFromPath(): Locale {
   return locale
 }
 
-export const Header = ({ locale, alternates, wide }: { locale: Locale; alternates: Alternate[]; wide?: boolean }) => {
+// **bold** and [links](https://… or #anchor) inside text. tag: element for bold (the design uses <strong> and <b> in different places).
+// cta: marks external links as call-to-action links (data-cta, see tracking.ts); other external links just open in a new tab.
+const TOKEN = /\*\*(.+?)\*\*|\[([^\]]+)\]\((https?:\/\/[^)\s]+|#[^)\s]*)\)/g
+export function Inline({ text, state, tag: Tag = "strong", cta }: { text: string; state: string; tag?: "strong" | "b"; cta?: string }): React.ReactElement {
+  const out: React.ReactNode[] = []
+  let last = 0
+  const src = fillState(text, state)
+  for (const m of src.matchAll(TOKEN)) {
+    if (m.index! > last) out.push(src.slice(last, m.index))
+    if (m[1] !== undefined) out.push(<Tag key={m.index}><Inline text={m[1]} state={state} tag={Tag} cta={cta} /></Tag>)
+    else if (m[3].startsWith("#")) out.push(<a key={m.index} href={m[3]}>{m[2]}</a>)
+    else out.push(<a key={m.index} href={m[3]} target="_blank" rel="noopener" data-cta={cta}>{m[2]}</a>)
+    last = m.index! + m[0].length
+  }
+  if (last < src.length) out.push(src.slice(last))
+  return <>{out}</>
+}
+
+export const Header = ({ locale }: { locale: Locale; alternates?: Alternate[] }) => { // no language switcher for now
   const t = ui[locale]
-  const others = alternates.filter(a => a.locale !== locale)
   return (
-    <header className={wide ? "site-header wide" : "site-header"}>
-      <div className="wrap">
-        <p className="brand">{t.brand}</p>
-        <p className="trust"><img src={verified18} width="18" height="18" alt="" />{t.trusted}</p>
-        {others.length > 0 && (
-          <nav className="lang" aria-label="Language">
-            {others.map(a => <a key={a.locale} href={a.path} hrefLang={a.locale} lang={a.locale}>{ui[a.locale].name}</a>)}
-          </nav>
-        )}
+    <>
+      <header className="mast">
+        <div className="frame gutter"><div className="mast-top"><p className="wordmark">{t.brand}<span>.</span></p></div></div>
+      </header>
+      <div className="rates" role="region" aria-label={t.statsLabel}>
+        <div className="frame gutter">
+          <div className="rates-inner">
+            <span className="rates-label">{t.statsLabel}</span>
+            {t.stats.map(s => <span key={s.k} className="rate"><span className="k">{s.k}</span><b>{s.v}</b><span className="src">{s.src}</span></span>)}
+          </div>
+        </div>
       </div>
-    </header>
+    </>
   )
 }
 
-export const Footer = ({ locale, wide }: { locale: Locale; wide?: boolean }) => {
+export const Footer = ({ locale }: { locale: Locale }) => {
   const t = ui[locale]
   return (
-    <footer className={wide ? "site-footer wide" : "site-footer"}>
-      <div className="wrap">
-        <p className="trust"><img src={verified18} width="18" height="18" alt="" />{t.secure}</p>
-        <p className="trust"><img src={verified18} width="18" height="18" alt="" />{t.privacy}</p>
-        <nav>{t.footerLinks.map(l => <a key={l} href="#">{l}</a>)}</nav>
+    <footer className="foot">
+      <div className="frame gutter">
+        <p className="wordmark">{t.brand}<span>.</span></p>
+        <div className="foot-links">{t.footerLinks.map(l => <span key={l}>{l}</span>)}</div>
+        <p className="disclosure"><b>{t.ad}.</b> {t.disclosure}</p>
+        <p className="disclosure">© {new Date().getFullYear()} {t.brand}</p>
       </div>
     </footer>
   )
@@ -106,7 +125,7 @@ export const HeadCommon = ({ locale, alternates, seo }: { locale: Locale; altern
       {alternates.length > 1 && x && <link rel="alternate" hrefLang="x-default" href={SITE_URL + x.path} />}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&family=Open+Sans:wght@400;700&family=Tinos:wght@700&family=Work+Sans:wght@400;600&display=swap" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400..800;1,6..72,400..600&display=swap" />
     </>
   )
 }

@@ -12,11 +12,11 @@ export default function Index({ pageContext: { articles, locale, alternates } }:
   const state = useStateName(locale)
   return (
     <div>
-      <Header locale={locale} alternates={alternates} wide />
+      <Header locale={locale} alternates={alternates} />
       <main className="home">
         {articles.length > 0 && <NewsCards items={articles} state={state} locale={locale} />}
       </main>
-      <Footer locale={locale} wide />
+      <Footer locale={locale} />
     </div>
   )
 }
