@@ -3,6 +3,8 @@
 You don't need to code. An article is one text file (Markdown) plus its images, added on GitHub.
 Once it is merged, the site rebuilds itself and the article is live at `https://<site>/<file-name>/`, usually within a couple of minutes.
 
+**What goes inside the file, step by step, with the real article as example: [writing-the-article-md.md](writing-the-article-md.md).**
+
 Example: a file called `how-to-get-out-of-debt.md` becomes `https://<site>/how-to-get-out-of-debt/`.
 
 ## 1. Pick the file name (this is the web address)

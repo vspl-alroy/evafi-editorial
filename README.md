@@ -8,7 +8,7 @@ Deployed to GitHub Pages: https://vspl-alroy.github.io
 Short version: add `content/<file-name>.md` (lowercase letters, digits, hyphens) and its images in `content/images/` through a GitHub pull request.
 The file name is the web address: `how-to-get-out-of-debt.md` → `/how-to-get-out-of-debt/`.
 
-**Full step-by-step guide: [docs/adding-an-article.md](docs/adding-an-article.md)**, with the writing rules, image tips, the quiz button and a pre-publish checklist.
+**Full step-by-step guide: [docs/adding-an-article.md](docs/adding-an-article.md)**, and how to write the `.md` itself (boxes, captions, header lines): [docs/writing-the-article-md.md](docs/writing-the-article-md.md), with the writing rules, image tips, the quiz button and a pre-publish checklist.
 Use `content/sample-article.md` as a template.
 
 ## For developers
