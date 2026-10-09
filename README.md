@@ -1,7 +1,7 @@
 # Debt News USA (EvaFi news site)
 
 Static news-style site built with [Gatsby](https://www.gatsbyjs.com/) 5 and React. Articles are Markdown files in `content/`; every file becomes a page.
-Deployed to GitHub Pages: https://vspl-alroy.github.io
+Deployed to GitHub Pages: https://relintex.github.io/evafi-editorial
 
 ## For the Marketing team: adding an article
 
@@ -52,7 +52,7 @@ docs/                    guides
 
 | Variable | Purpose | Default |
 |---|---|---|
-| `GATSBY_SITE_URL` | Real domain, used for canonical, `hreflang`, Open Graph and sitemap URLs | `https://vspl-alroy.github.io` |
+| `GATSBY_SITE_URL` | Real domain, used for canonical, `hreflang`, Open Graph and sitemap URLs | `https://relintex.github.io/evafi-editorial` |
 | `GATSBY_INDEXABLE` | Set to `1` at launch. Otherwise every page is `noindex` and `robots.txt` disallows all | off |
 
 ### Deployment
