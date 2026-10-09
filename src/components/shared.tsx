@@ -27,19 +27,37 @@ export function useLocaleFromPath(): Locale {
   return locale
 }
 
-export const Header = ({ locale }: { locale: Locale; alternates?: Alternate[] }) => { // language switcher removed for now; pages still pass alternates (hreflang)
+// **bold** and [links](https://… or #anchor) inside text. tag: element for bold (the design uses <strong> and <b> in different places).
+// cta: marks external links as call-to-action links (data-cta, see tracking.ts); other external links just open in a new tab.
+const TOKEN = /\*\*(.+?)\*\*|\[([^\]]+)\]\((https?:\/\/[^)\s]+|#[^)\s]*)\)/g
+export function Inline({ text, state, tag: Tag = "strong", cta }: { text: string; state: string; tag?: "strong" | "b"; cta?: string }): React.ReactElement {
+  const out: React.ReactNode[] = []
+  let last = 0
+  const src = fillState(text, state)
+  for (const m of src.matchAll(TOKEN)) {
+    if (m.index! > last) out.push(src.slice(last, m.index))
+    if (m[1] !== undefined) out.push(<Tag key={m.index}><Inline text={m[1]} state={state} tag={Tag} cta={cta} /></Tag>)
+    else if (m[3].startsWith("#")) out.push(<a key={m.index} href={m[3]}>{m[2]}</a>)
+    else out.push(<a key={m.index} href={m[3]} target="_blank" rel="noopener" data-cta={cta}>{m[2]}</a>)
+    last = m.index! + m[0].length
+  }
+  if (last < src.length) out.push(src.slice(last))
+  return <>{out}</>
+}
+
+export const Header = ({ locale }: { locale: Locale; alternates?: Alternate[] }) => { // no language switcher for now
   const t = ui[locale]
   return (
     <>
       <header className="mast">
-        <div className="frame gutter mast-top">
-          <p className="wordmark">{t.brand}<span>.</span></p>
-        </div>
+        <div className="frame gutter"><div className="mast-top"><p className="wordmark">{t.brand}<span>.</span></p></div></div>
       </header>
       <div className="rates" role="region" aria-label={t.statsLabel}>
-        <div className="frame gutter rates-inner">
-          <span className="rates-label">{t.statsLabel}</span>
-          {t.stats.map(s => <span key={s.k} className="rate"><span className="k">{s.k}</span><b>{s.v}</b><span className="src">{s.src}</span></span>)}
+        <div className="frame gutter">
+          <div className="rates-inner">
+            <span className="rates-label">{t.statsLabel}</span>
+            {t.stats.map(s => <span key={s.k} className="rate"><span className="k">{s.k}</span><b>{s.v}</b><span className="src">{s.src}</span></span>)}
+          </div>
         </div>
       </div>
     </>
@@ -52,7 +70,7 @@ export const Footer = ({ locale }: { locale: Locale }) => {
     <footer className="foot">
       <div className="frame gutter">
         <p className="wordmark">{t.brand}<span>.</span></p>
-        <nav>{t.footerLinks.map(l => <a key={l} href="#">{l}</a>)}</nav>
+        <div className="foot-links">{t.footerLinks.map(l => <span key={l}>{l}</span>)}</div>
         <p className="disclosure"><b>{t.ad}.</b> {t.disclosure}</p>
         <p className="disclosure">© {new Date().getFullYear()} {t.brand}</p>
       </div>

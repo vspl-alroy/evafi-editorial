@@ -1,5 +1,3 @@
-@use "tokens" as *;
-
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -10,56 +8,13 @@ html {
   margin: 0;
 }
 
-body {
-  background: #fff;
-  color: $text;
-  font: 16px/1.5 $font-sans;
-  overflow-wrap: break-word;
-}
-
 img {
-  display: block;
   max-width: 100%;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
+// 404 page
 .wrap {
   max-width: 720px;
   margin: 0 auto;
-  // safe-area: keep text clear of phone notches
-  padding: 0 max($gutter, env(safe-area-inset-right)) 0 max($gutter, env(safe-area-inset-left));
-}
-
-.frame {
-  max-width: $bp-lg;
-  margin: 0 auto;
-}
-
-.gutter {
-  padding-inline: max($gutter, env(safe-area-inset-right)) max($gutter, env(safe-area-inset-left));
-
-  @include md {
-    padding-inline: 32px;
-  }
-}
-
-h2 {
-  font-size: 24px;
-  line-height: 32px;
-  font-weight: 700;
-}
-
-ol {
-  padding-left: 24px;
-}
-
-@include md {
-  h2 {
-    font-size: 27px;
-    line-height: 36px;
-  }
+  padding-inline: 16px;
 }

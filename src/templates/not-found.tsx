@@ -17,7 +17,7 @@ export default function NotFound({ pageContext: { byLocale } }: PageProps<object
     <div>
       <Header locale={locale} alternates={[]} />
       <main className="home">
-        <div className="wrap not-found">
+        <div className="frame gutter not-found">
           <p className="kicker">404</p>
           <h1>{t.notFound}</h1>
           <p>{t.notFoundText}</p>
