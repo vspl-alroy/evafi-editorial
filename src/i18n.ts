@@ -6,7 +6,7 @@ export type Locale = (typeof locales)[number]
 export const defaultLocale: Locale = "en"
 
 // Absolute URLs are required by hreflang. Set GATSBY_SITE_URL when the custom domain is live.
-export const SITE_URL = (process.env.GATSBY_SITE_URL ?? "https://vspl-alroy.github.io").replace(/\/$/, "")
+export const SITE_URL = (process.env.GATSBY_SITE_URL ?? "https://relintex.github.io/evafi-editorial").replace(/\/$/, "")
 
 export const localePath = (locale: string, slug = "") =>
   `${locale === defaultLocale ? "" : `/${locale}`}/${slug ? `${slug}/` : ""}`

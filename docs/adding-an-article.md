@@ -90,7 +90,7 @@ Always write alt text between the `[ ]`: it is read aloud for visitors who can't
 
 ## 4. Publish it on GitHub (no tools needed)
 
-1. Open the repository: https://github.com/vspl-alroy/vspl-alroy.github.io
+1. Open the repository: https://github.com/relintex/evafi-editorial
 2. Open the `content` folder. Click **Add file → Create new file**.
 3. In the name box type `how-to-get-out-of-debt.md` (the file name from step 1) and paste your article.
    Use the **Preview** tab to check the text. It's plain, not the site's design.
