@@ -3,7 +3,7 @@ import type { HeadProps, PageProps } from "gatsby"
 import "../styles/styles.scss"
 import type { BodyItem, Box, Cta, Img, Variant } from "../content"
 import hero from "../images/hero.png"
-import { HeadCommon, Footer, Header, Inline, NewsCards, fillState, useStateName } from "../components/shared"
+import { HeadCommon, Footer, Header, Inline, fillState, useStateName } from "../components/shared"
 import { startTracking } from "../tracking"
 import { excerpt } from "../content"
 import { defaultLocale, ui } from "../i18n"
@@ -126,7 +126,7 @@ const Figure = ({ img, section, hero, sizes }: { img: Img; section: string; hero
   </figure>
 )
 
-export default function Article({ pageContext: { slug, title, date, kicker, byline, tracking, hero: heroOverride, intro, sections, outro = [], rail, cta, more, locale = defaultLocale, alternates = [] } }: PageProps<object, Variant>) {
+export default function Article({ pageContext: { slug, title, date, kicker, byline, tracking, hero: heroOverride, intro, sections, outro = [], rail, cta, locale = defaultLocale, alternates = [] } }: PageProps<object, Variant>) {
   const state = useStateName(locale)
   const t = ui[locale]
   React.useEffect(() => startTracking(tracking ?? slug.replace(/-/g, "_")), [tracking, slug])
@@ -204,8 +204,6 @@ export default function Article({ pageContext: { slug, title, date, kicker, byli
             </div>
           </aside>
         </div>
-
-        {more && more.length > 0 && <NewsCards items={more} state={state} locale={locale} />}
       </main>
 
       <Footer locale={locale} />

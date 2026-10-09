@@ -105,7 +105,7 @@ After it is live, open the address and check:
 - [ ] Every image appears.
 - [ ] The buttons go to the right quiz link.
 - [ ] The numbered steps appear where you expect (at the end of their section).
-- [ ] The article shows on the home page and in the "Todays Financial News" cards of other articles.
+- [ ] The article shows on the home page.
 
 If something is off, edit the file on GitHub (pencil icon) and propose the change again.
 

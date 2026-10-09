@@ -81,8 +81,6 @@ export const onPreBootstrap: GatsbyNode["onPreBootstrap"] = async () => {
 const withVariants = (img: Img): Img => ({ ...img, ...optimised.get(img.img) })
 const enrich = (item: BodyItem): BodyItem => (typeof item === "object" && !Array.isArray(item) && "img" in item ? withVariants(item) : item)
 
-const MORE = 3
-
 function teaser(v: Variant): Teaser {
   return { slug: v.slug, title: v.title, img: v.hero?.img, srcSet: v.hero?.srcSet, text: excerpt(v.intro, 140) }
 }
@@ -116,13 +114,11 @@ export const createPages: GatsbyNode["createPages"] = ({ actions }) => {
         context: { articles: articles.map(teaser), locale, alternates: alternatesFor() },
       })
     }
-    // "More news": the next MORE articles after this one (wrapping), so it's never the page being read.
-    articles.forEach((variant, i) => {
-      const others = articles.slice(i + 1).concat(articles.slice(0, i))
+    articles.forEach(variant => {
       actions.createPage({
         path: localePath(locale, variant.slug),
         component: path.resolve("src/templates/article.tsx"),
-        context: { ...variant, more: others.slice(0, MORE).map(teaser), alternates: alternatesFor(variant.slug) },
+        context: { ...variant, alternates: alternatesFor(variant.slug) },
       })
     })
   }

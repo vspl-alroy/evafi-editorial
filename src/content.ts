@@ -46,7 +46,6 @@ export interface Variant {
   cta?: { href: string; label?: string } // quiz link, from the last line of the markdown file
   intro: BodyItem[]
   sections: Section[]
-  more?: Teaser[]
   locale?: Locale
   alternates?: Alternate[] // every language this page exists in, including itself
 }
