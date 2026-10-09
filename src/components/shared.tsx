@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Link } from "gatsby"
+import { Link, withPrefix } from "gatsby"
 import { SITE_URL, defaultLocale, localePath, locales, ui } from "../i18n"
 import type { Alternate, Locale } from "../i18n"
 import type { Teaser } from "../content"
@@ -17,11 +17,14 @@ export function useStateName(locale: Locale) {
   return state
 }
 
+// Prefix root-relative URLs (also each URL of a srcSet) with the site path prefix. No-op when there is none.
+export const prefixed = (s?: string) => s?.replace(/(^|,\s*)\//g, (_, p) => p + withPrefix("/"))
+
 // Locale from the URL (/es/...), for pages with no locale of their own such as the 404.
 export function useLocaleFromPath(): Locale {
   const [locale, setLocale] = React.useState<Locale>(defaultLocale)
   React.useEffect(() => {
-    const first = window.location.pathname.split("/")[1]
+    const first = window.location.pathname.slice(withPrefix("/").length).split("/")[0]
     setLocale(locales.find(l => l === first) ?? defaultLocale)
   }, [])
   return locale
@@ -85,7 +88,7 @@ export const NewsCards = ({ items, state, locale, title }: { items: Teaser[]; st
     {items.map(a => (
       <article key={a.slug}>
         <Link to={localePath(locale, a.slug)}>
-          <div className="news-img"><img src={a.img ?? hero} srcSet={a.srcSet} sizes={a.srcSet ? "(min-width: 720px) 320px, calc(100vw - 48px)" : undefined} alt="" loading="lazy" decoding="async" /></div>
+          <div className="news-img"><img src={prefixed(a.img ?? hero)} srcSet={prefixed(a.srcSet)} sizes={a.srcSet ? "(min-width: 720px) 320px, calc(100vw - 48px)" : undefined} alt="" loading="lazy" decoding="async" /></div>
           <h3>{fillState(a.title, state)}</h3>
           <p>{fillState(a.text, state)}</p>
         </Link>
@@ -105,7 +108,7 @@ export const HeadCommon = ({ locale, alternates, seo }: { locale: Locale; altern
   return (
     <>
       <html lang={locale} />
-      <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+      <link rel="icon" href={withPrefix("/favicon.svg")} type="image/svg+xml" />
       {!INDEXABLE && <meta name="robots" content="noindex, nofollow" />}
       {seo && (
         <>
@@ -117,7 +120,7 @@ export const HeadCommon = ({ locale, alternates, seo }: { locale: Locale; altern
           <meta property="og:description" content={seo.description} />
           <meta property="og:url" content={abs(seo.path)} />
           <meta property="og:locale" content={locale === "es" ? "es_US" : "en_US"} />
-          {seo.image && <meta property="og:image" content={abs(seo.image)} />}
+          {seo.image && <meta property="og:image" content={abs(prefixed(seo.image)!)} />}
           <meta name="twitter:card" content={seo.image ? "summary_large_image" : "summary"} />
         </>
       )}

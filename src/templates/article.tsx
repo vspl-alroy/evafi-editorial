@@ -3,7 +3,7 @@ import type { HeadProps, PageProps } from "gatsby"
 import "../styles/styles.scss"
 import type { BodyItem, Box, Cta, Img, Variant } from "../content"
 import hero from "../images/hero.png"
-import { HeadCommon, Footer, Header, Inline, fillState, useStateName } from "../components/shared"
+import { HeadCommon, Footer, Header, Inline, fillState, prefixed, useStateName } from "../components/shared"
 import { startTracking } from "../tracking"
 import { excerpt } from "../content"
 import { defaultLocale, ui } from "../i18n"
@@ -121,7 +121,7 @@ const Next = ({ b, state, cta }: { b: Cta; state: string; cta?: string }) => {
 
 const Figure = ({ img, section, hero, sizes }: { img: Img; section: string; hero?: boolean; sizes: string }) => (
   <figure className={hero ? "photo hero-photo" : "photo"} data-section={section}>
-    <img src={img.img} srcSet={img.srcSet} sizes={img.srcSet ? sizes : undefined} width={img.width} height={img.height} alt={img.alt} {...(hero ? { fetchPriority: "high" as const } : { loading: "lazy" as const })} decoding="async" />
+    <img src={prefixed(img.img)} srcSet={prefixed(img.srcSet)} sizes={img.srcSet ? sizes : undefined} width={img.width} height={img.height} alt={img.alt} {...(hero ? { fetchPriority: "high" as const } : { loading: "lazy" as const })} decoding="async" />
     {img.caption && <figcaption>{img.caption}{img.credit && <> <span className="credit">{img.credit}</span></>}</figcaption>}
   </figure>
 )
