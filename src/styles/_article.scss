@@ -277,8 +277,17 @@
       padding-top: 2px;
     }
 
-    &:hover {
+    &:hover,
+    &[aria-current="true"] {
       color: $ink;
+    }
+
+    &[aria-current="true"] {
+      font-weight: 700;
+
+      &::before {
+        color: $trap;
+      }
     }
   }
 }

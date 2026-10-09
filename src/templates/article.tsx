@@ -40,6 +40,15 @@ const Toc = ({ sections, title }: { sections: Variant["sections"]; title: string
 export default function Article({ pageContext: { title, date, hero: heroOverride, intro, sections, cta, more, locale = defaultLocale, alternates = [] } }: PageProps<object, Variant>) {
   const state = useStateName(locale)
   const t = ui[locale]
+  // highlight the contents entry of the section being read (same rule as the design: band at 30-40% of the viewport)
+  React.useEffect(() => {
+    const links = document.querySelectorAll<HTMLAnchorElement>(".rail .toc a")
+    const spy = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) links.forEach(a => a.setAttribute("aria-current", String(a.getAttribute("href") === "#" + e.target.id)))
+    }), { rootMargin: "-30% 0px -60% 0px" })
+    document.querySelectorAll(".q").forEach(q => spy.observe(q))
+    return () => spy.disconnect()
+  }, [])
   // first plain paragraph is the standfirst under the headline; the rest is the body
   const di = intro.findIndex(b => typeof b === "string")
   const dek = di >= 0 ? (intro[di] as string) : undefined
