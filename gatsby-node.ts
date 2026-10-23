@@ -124,13 +124,14 @@ export const createPages: GatsbyNode["createPages"] = ({ actions }) => {
   }
 }
 
+const PREFIX = process.env.PREFIX_PATHS === "true" ? (process.env.PATH_PREFIX ?? "").replace(/\/$/, "") : ""
 // Static robots.txt + sitemap.xml (with hreflang alternates). Search engines are told to stay away
 // unless the build sets GATSBY_INDEXABLE=1, so the development site is not indexed by accident.
 export const onPostBuild: GatsbyNode["onPostBuild"] = () => {
   const indexable = process.env.GATSBY_INDEXABLE === "1"
   fs.writeFileSync(
     path.resolve("public/robots.txt"),
-    indexable ? `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n` : "User-agent: *\nDisallow: /\n",
+    indexable ? `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}${PREFIX}/sitemap.xml\n` : "User-agent: *\nDisallow: /\n",
   )
   const slugs = new Map<string, Locale[]>() // slug ("" = home) -> locales that have it
   for (const locale of locales) {
@@ -139,8 +140,8 @@ export const onPostBuild: GatsbyNode["onPostBuild"] = () => {
     for (const v of articles) slugs.set(v.slug, [...(slugs.get(v.slug) ?? []), locale])
   }
   const urls = [...slugs].map(([slug, ls]) => {
-    const alts = ls.length > 1 ? ls.map(l => `<xhtml:link rel="alternate" hreflang="${l}" href="${SITE_URL}${localePath(l, slug)}"/>`).join("") : ""
-    return ls.map(l => `<url><loc>${SITE_URL}${localePath(l, slug)}</loc>${alts}</url>`).join("")
+    const alts = ls.length > 1 ? ls.map(l => `<xhtml:link rel="alternate" hreflang="${l}" href="${SITE_URL}${PREFIX}${localePath(l, slug)}"/>`).join("") : ""
+    return ls.map(l => `<url><loc>${SITE_URL}${PREFIX}${localePath(l, slug)}</loc>${alts}</url>`).join("")
   })
   fs.writeFileSync(
     path.resolve("public/sitemap.xml"),
