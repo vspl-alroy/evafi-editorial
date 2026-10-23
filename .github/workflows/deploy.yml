@@ -27,6 +27,7 @@ jobs:
       - run: PATH_PREFIX="/${GITHUB_REPOSITORY#*/}" npm run build
         env:
           PREFIX_PATHS: "true"
+          GATSBY_SITE_URL: https://relintex.github.io
       - uses: actions/upload-pages-artifact@v5
         with:
           path: public
