@@ -1,0 +1,40 @@
+// Legal pages linked from the footer (src/components/legal-page.tsx). They reuse the
+// article page's .head, .rail and .toc, this file only adds what those don't cover.
+
+// Widths follow EvaFi's Terms page (src/ui/landing/Terms.tsx), not the 1040px frame: full width with
+// 18px / 40px (from 640px) side padding, 12 columns with 24px gaps, rail 5 / 4 / 3 columns at 768 /
+// 1024 / 1280px and the text the rest. Rail on the left, its top level with the title.
+.legal-wrap { padding-inline: 18px; }
+@media (min-width: 640px) { .legal-wrap { padding-inline: 40px; } }
+.legal-layout { display: grid; grid-template-columns: minmax(0, 1fr); padding-bottom: 24px; }
+.legal-main { min-width: 0; }
+.legal-main .head { max-width: none; }
+@media (min-width: 768px) {
+  .legal-layout { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 25px; padding-top: 28px; }
+  .legal-layout > .rail { display: block; grid-column: span 5; }
+  .legal-main { grid-column: span 7; }
+  .legal-main .head { padding-top: 0; }
+}
+@media (min-width: 1024px) { .legal-layout > .rail { grid-column: span 4; } .legal-main { grid-column: span 8; } }
+@media (min-width: 1280px) { .legal-layout > .rail { grid-column: span 3; } .legal-main { grid-column: span 9; } }
+
+// Under 768px: sticky "Table of Contents" bar, opens a dropdown of the same links.
+.legal-toc-bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); padding-block: 10px; margin-top: 12px; }
+@media (min-width: 768px) { .legal-toc-bar { display: none; } }
+.legal-toc-toggle { position: relative; z-index: 1; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--ink); color: var(--ink); font: inherit; font-size: .74rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
+.legal-toc-toggle svg { flex-shrink: 0; transition: transform .2s; }
+.legal-toc-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+.legal-toc-panel { position: absolute; z-index: 1; left: 0; right: 0; top: calc(100% - 10px); max-height: 70vh; overflow-y: auto; overscroll-behavior: contain; background: var(--bg); border: 1px solid var(--ink); border-top: 0; padding: 4px 14px; box-shadow: 0 12px 24px rgba(0,0,0,.12); }
+.legal-toc-panel li:last-child { border-bottom: 0; }
+.legal-toc-backdrop { position: fixed; inset: 0; background: rgba(17, 18, 20, .4); }
+
+.legal-updated { font-size: .84rem; color: var(--muted); margin-bottom: 18px; }
+.legal-body { display: grid; gap: 40px; align-content: start; padding-top: 32px; }
+.legal-sec { scroll-margin-top: 84px; } // clears the sticky bar
+@media (min-width: 768px) { .legal-sec { scroll-margin-top: 24px; } }
+// Type matches the article body: h2 as .q h2, paragraphs as .article > p, links and bold as in _article.scss.
+.legal-sec h2 { font-family: var(--sans); font-weight: 800; font-size: 1.5rem; line-height: 1.22; letter-spacing: -.01em; color: var(--ink); margin: 0 0 .7em; text-wrap: balance; }
+.legal-text p { font-family: var(--serif); font-size: 1.1875rem; line-height: 1.62; color: var(--text); margin: 0; text-wrap: pretty; overflow-wrap: anywhere; }
+.legal-text p + p { margin-top: 1.25em; }
+.legal-text a { color: var(--way); text-underline-offset: 3px; font-weight: 700; }
+.legal-text b { color: var(--ink); }

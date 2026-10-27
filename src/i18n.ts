@@ -25,7 +25,7 @@ export interface UI {
   nextStep: string
   disclosure: string
   statement: string[] // labels of the card-statement illustration, see the "statement" box
-  footerLinks: string[]
+  footerLinks: { label: string; to?: string }[] // to: site path, for the pages that exist so far
   author: string
   authorName: string
   updated: string
@@ -59,7 +59,7 @@ export const ui: Record<Locale, UI> = {
     nextStep: "Next step",
     statement: ["CARD STATEMENT", "Account ending in ••••", "New balance", "Minimum payment due", "Purchase APR", "Late Payment Warning:", "If we do not receive your minimum payment by the date listed above, you may have to pay a late fee and your APRs may be increased.", "Minimum Payment Warning", "If you make only the minimum payment each period, you will pay more in interest and it will take you longer to pay off your balance.", "If you make no additional charges using this card and each month you pay…", "You will pay off the balance shown on this statement in about…", "And you will end up paying an estimated total of…"],
     disclosure: "This article is paid advertising content from EvaFi, a service that connects people with debt consolidation options through its financial partners. The Debt Consolidation Check is operated by EvaFi. This content is for general information only and is not financial, legal or tax advice. Rates, terms and eligibility vary.",
-    footerLinks: ["About", "Advertising disclosure", "Privacy", "Terms"],
+    footerLinks: [{ label: "About" }, { label: "Advertising disclosure" }, { label: "Privacy" }, { label: "Terms" }, { label: "E-Comm Consent", to: "/esign-consent/" }],
     author: "Author",
     authorName: "EvaFi Editorial team",
     updated: "Updated",
@@ -92,7 +92,7 @@ export const ui: Record<Locale, UI> = {
     nextStep: "Siguiente paso",
     statement: ["ESTADO DE CUENTA", "Cuenta terminada en ••••", "Saldo nuevo", "Pago mínimo a pagar", "APR de compras", "Aviso de pago atrasado:", "Si no recibimos su pago mínimo antes de la fecha indicada arriba, es posible que deba pagar un cargo por mora y que sus APR aumenten.", "Aviso de pago mínimo", "Si realiza solo el pago mínimo cada período, pagará más intereses y tardará más en pagar su saldo.", "Si no hace cargos adicionales con esta tarjeta y cada mes paga…", "Pagará el saldo que aparece en este estado de cuenta en aproximadamente…", "Y terminará pagando un total estimado de…"],
     disclosure: "Este artículo es contenido publicitario pagado de EvaFi, un servicio que conecta a las personas con opciones de consolidación de deudas a través de sus socios financieros. El Debt Consolidation Check es operado por EvaFi. Este contenido es solo informativo y no constituye asesoría financiera, legal ni fiscal. Las tasas, los términos y la elegibilidad varían.",
-    footerLinks: ["Acerca de", "Divulgación publicitaria", "Privacidad", "Términos"],
+    footerLinks: [{ label: "Acerca de" }, { label: "Divulgación publicitaria" }, { label: "Privacidad" }, { label: "Términos" }, { label: "Consentimiento electrónico", to: "/esign-consent/" }],
     author: "Autor",
     authorName: "Equipo editorial de EvaFi",
     updated: "Actualizado",

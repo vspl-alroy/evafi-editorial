@@ -105,6 +105,8 @@ export const createPages: GatsbyNode["createPages"] = ({ actions }) => {
     context: { byLocale: Object.fromEntries(locales.map(l => [l, byLocale.get(l)!.map(teaser)])) },
   })
 
+  actions.createPage({ path: "/esign-consent/", component: path.resolve("src/templates/esign-consent.tsx") })
+
   for (const locale of locales) {
     const articles = byLocale.get(locale)!
     if (locale === defaultLocale || articles.length) {
