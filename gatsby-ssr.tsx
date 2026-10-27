@@ -6,6 +6,6 @@ import type { GatsbySSR } from "gatsby"
 export const onRenderBody: GatsbySSR["onRenderBody"] = ({ setHeadComponents }) => {
   if (process.env.GATSBY_COMETLY_ENABLED !== "1") return
   setHeadComponents([
-    <script key="cometly" src="https://js.comet-serve.com/script.js?uid=6a05d5-6755399444000020-3a9e49-s&domains=debtadvice101.com,evafi.com" async />,
+    <script key="cometly" src="https://js.comet-serve.com/script.js?uid=6a05d5-6755399444000020-3a9e49-s&domains=evafi.com,debtadvice101.com" async />,
   ])
 }
