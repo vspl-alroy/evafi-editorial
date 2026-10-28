@@ -463,7 +463,7 @@ export const NoSellShare: PageView = ({ locale }) => {
             <p className="el-updated">Last Updated: August 2026</p>
             <p className="el-lead">
               The protection of your personal data is important to Debt Advice 101 and we are committed to ensuring that your privacy rights are
-              respected. Click here for <Link to={localePath(locale, "privacy")}>Debt Advice 101&apos;s Privacy Policy</Link> and California Privacy Policy.
+              respected. Click here for <Link to={localePath(locale, "privacy")}>Debt Advice 101&apos;s Privacy Policy</Link> and <Link to={localePath(locale, "california-policy")}>California Privacy Policy</Link>.
               As a resident of above states, you are granted certain rights pursuant to your state&apos;s privacy laws, namely you may request that we:
             </p>
             <ul className="el-list-disc">

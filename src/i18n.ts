@@ -64,6 +64,7 @@ export const ui: Record<Locale, UI> = {
       { label: "Advertising disclosure", slug: "advertising-disclosure" },
       { label: "Privacy", slug: "privacy" },
       { label: "Terms", slug: "terms" },
+      { label: "CA Privacy Policy", slug: "california-policy" },
       { label: "Do Not Sell or Share", slug: "do-not-sell-or-share" },
       { label: "E-Comm Consent", slug: "esign-consent" },
     ],
@@ -104,6 +105,7 @@ export const ui: Record<Locale, UI> = {
       { label: "Divulgación publicitaria", slug: "advertising-disclosure" },
       { label: "Privacidad", slug: "privacy" },
       { label: "Términos", slug: "terms" },
+      { label: "Política de privacidad de California", slug: "california-policy" }, // page text is English only for now
       { label: "No vender ni compartir", slug: "do-not-sell-or-share" },
       { label: "Consentimiento electrónico", slug: "esign-consent" }, // page text is English only for now
     ],
