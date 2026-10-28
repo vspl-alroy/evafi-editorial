@@ -134,7 +134,7 @@ export const EConsent: PageView = () => {
           contacting us at: Nationwide Financial Group LLC d/b/a Debt Advice 101,
           Attn: Customer Service, 898 S State St, Ste 310, #920, Orem,
           UT 84097; via email at{" "}
-          <a href={`mailto:${EMAIL}`}>{EMAIL}</a>; via phone,
+          <a className="el-plain" href={`mailto:${EMAIL}`}>{EMAIL}</a>; via phone,
           toll-free at {PHONE}; or through any other reasonable
           means. If we agree to provide the requested paper copy of an
           Electronic Communication, we may charge you our fees and
@@ -155,7 +155,7 @@ export const EConsent: PageView = () => {
           contacting us at: Nationwide Financial Group LLC d/b/a Debt Advice 101,
           Attn: Customer Service, 898 S State St, Ste 310, #920, Orem,
           UT 84097; via email at{" "}
-          <a href={`mailto:${EMAIL}`}>{EMAIL}</a>; or via
+          <a className="el-plain" href={`mailto:${EMAIL}`}>{EMAIL}</a>; or via
           phone, toll-free at {PHONE}. In your email or written
           communication, please provide the following: (1) in the
           subject line state, &quot;Withdraw electronic consent&quot;, and (2)
@@ -190,7 +190,7 @@ export const EConsent: PageView = () => {
           your email address, telephone number, or home mailing address.
           You may update such information by calling us toll-free at
           {" "}{PHONE} or via email at{" "}
-          <a href={`mailto:${EMAIL}`}>{EMAIL}</a>, or
+          <a className="el-plain" href={`mailto:${EMAIL}`}>{EMAIL}</a>, or
           accessing the Site and providing the updated information. You
           may also contact us at: Nationwide Financial Group LLC d/b/a
           Debt Advice 101, Attn: Customer Service, 898 S State St, Ste 310, #920,
