@@ -25,7 +25,7 @@ export interface UI {
   nextStep: string
   disclosure: string
   statement: string[] // labels of the card-statement illustration, see the "statement" box
-  footerLinks: { label: string; slug: string }[] // each slug is a page /<slug>/, body in src/components/pages/<slug>.tsx
+  footerLinks: { label: string; slug: string }[] // each slug is a page /<slug>/, body registered in src/components/pages/index.ts
   author: string
   authorName: string
   updated: string
@@ -65,6 +65,7 @@ export const ui: Record<Locale, UI> = {
       { label: "Privacy", slug: "privacy" },
       { label: "Terms", slug: "terms" },
       { label: "Do Not Sell or Share", slug: "do-not-sell-or-share" },
+      { label: "E-Comm Consent", slug: "esign-consent" },
     ],
     author: "Author",
     authorName: "EvaFi Editorial team",
@@ -104,6 +105,7 @@ export const ui: Record<Locale, UI> = {
       { label: "Privacidad", slug: "privacy" },
       { label: "Términos", slug: "terms" },
       { label: "No vender ni compartir", slug: "do-not-sell-or-share" },
+      { label: "Consentimiento electrónico", slug: "esign-consent" }, // page text is English only for now
     ],
     author: "Autor",
     authorName: "Equipo editorial de EvaFi",

@@ -2,6 +2,7 @@ import type * as React from "react"
 import type { Locale } from "../../i18n"
 import { About } from "./about"
 import { AdvertisingDisclosure } from "./advertising-disclosure"
+import { EConsent } from "./esign-consent"
 import { NoSellShare } from "./NoSellShare"
 import { Privacy } from "./privacy"
 import { Terms } from "./terms"
@@ -16,4 +17,5 @@ export const pageViews: Record<string, PageView> = {
   privacy: Privacy,
   terms: Terms,
   "do-not-sell-or-share": NoSellShare,
+  "esign-consent": EConsent,
 }
