@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 // Layout of the legal pages linked from the footer (E-Comm Consent, and later Terms, Privacy…), in EvaFi's design:
 // EvaFi's src/components/Policies.tsx (SideNavbar, Section) and the title block of its legal pages.
@@ -13,10 +13,15 @@ const TocChevron = () => (
 )
 
 // Highlights the section being read (EvaFi's useSectionScroll): the last one whose top passed 40% of the screen.
+// A section picked in the table of contents stays highlighted until the user scrolls by hand: short sections near the
+// end can't reach the top far enough, so the 40% / page-bottom rules would highlight the next one.
 export function useActiveSection(sections: LegalSection[]) {
   const [active, setActive] = useState(sections[0]?.id)
+  const picked = useRef<string | null>(null)
   useEffect(() => {
+    const release = () => { picked.current = null }
     const onScroll = () => {
+      if (picked.current) return setActive(picked.current)
       let id = sections[0]?.id
       for (const s of sections) {
         const el = document.getElementById(s.id)
@@ -26,10 +31,19 @@ export function useActiveSection(sections: LegalSection[]) {
       setActive(id)
     }
     onScroll()
+    const manual = ["wheel", "touchstart", "keydown", "mousedown"] as const
     window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
+    manual.forEach(e => window.addEventListener(e, release, { passive: true }))
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      manual.forEach(e => window.removeEventListener(e, release))
+    }
   }, [sections])
-  const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })
+  const scrollTo = (id: string) => {
+    picked.current = id
+    setActive(id)
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
   return { active, scrollTo }
 }
 
