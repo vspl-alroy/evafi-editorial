@@ -1,91 +1,104 @@
 import * as React from "react"
-import "../styles/styles.scss"
-import { Footer, HeadCommon, Header } from "./shared"
-import { ui } from "../i18n"
+import { useEffect, useState } from "react"
 
-// Layout of the legal pages linked from the footer (E-Comm Consent, and later Terms, Privacy…).
+// Layout of the legal pages linked from the footer (E-Comm Consent, and later Terms, Privacy…), in EvaFi's design:
+// EvaFi's src/components/Policies.tsx (SideNavbar, Section) and the title block of its legal pages.
+// Styles: .evafi-legal / .el-* in _article.scss. Header, footer and <head> come from templates/page.tsx: register the
+// page in src/components/pages/index.ts with ownLayout = true.
+
 export interface LegalSection { id: string; label: string }
 
-export const Section = ({ id, title, children }: { id: string; title: string; children: React.ReactNode }) => (
-  <section id={id} className="legal-sec">
-    <h2>{title}</h2>
-    <div className="legal-text">{children}</div>
-  </section>
+const TocChevron = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6L8 11L13 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
 )
 
-export function LegalPage({ title, updated, sections, intro, children }: {
-  title: string; updated: string; sections: LegalSection[]; intro?: React.ReactNode; children: React.ReactNode
-}) {
-  const [open, setOpen] = React.useState(false)
-  React.useEffect(() => {
-    if (!open) return
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false) }
-    window.addEventListener("keydown", onKey)
-    return () => window.removeEventListener("keydown", onKey)
-  }, [open])
-
-  const [active, setActive] = React.useState<string>()
-  
-  // A clicked link stays current through the (smooth) scroll it starts: otherwise passing sections,
-  // or the next one when the page can't scroll its target that far up, take over.
-  const unlock = React.useRef<(() => void) | undefined>(undefined) // set while a click holds the highlight
-  React.useEffect(() => {
-    if (!("IntersectionObserver" in window)) return
-    const spy = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting && !unlock.current) setActive(en.target.id) }), { rootMargin: "-30% 0px -60% 0px" })
-    sections.forEach(s => { const el = document.getElementById(s.id); if (el) spy.observe(el) })
-    return () => { spy.disconnect(); unlock.current?.() }
+// Highlights the section being read (EvaFi's useSectionScroll): the last one whose top passed 40% of the screen.
+export function useActiveSection(sections: LegalSection[]) {
+  const [active, setActive] = useState(sections[0]?.id)
+  useEffect(() => {
+    const onScroll = () => {
+      let id = sections[0]?.id
+      for (const s of sections) {
+        const el = document.getElementById(s.id)
+        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.4) id = s.id
+      }
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) id = sections[sections.length - 1]?.id
+      setActive(id)
+    }
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
   }, [sections])
-  const pick = (id: string) => {
-    unlock.current?.()
-    setActive(id)
-    const settle = () => { clearTimeout(timer); timer = setTimeout(release, 150) } // the observer reports the final position after scrollend
-    const release = () => { clearTimeout(timer); window.removeEventListener("scrollend", settle); if (unlock.current === release) unlock.current = undefined }
-    let timer = setTimeout(release, 1500) // no scrollend (older Safari) or nothing to scroll
-    window.addEventListener("scrollend", settle)
-    unlock.current = release
-  }
-  const list = (onClick?: () => void) => (
-    <ol>{sections.map(s => (
-      <li key={s.id}><a href={`#${s.id}`} aria-current={active === s.id ? "true" : undefined} onClick={() => { pick(s.id); onClick?.() }}>{s.label}</a></li>
-    ))}</ol>
-  )
-  
+  const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })
+  return { active, scrollTo }
+}
+
+const TocList = ({ sections, active, onSelect }: { sections: LegalSection[]; active?: string; onSelect: (id: string) => void }) => (
+  <nav className="el-toc-list">
+    {sections.map(({ id, label }, i) => (
+      <button key={id} type="button" className={active === id ? "on" : undefined} onClick={() => onSelect(id)}><span className="n">{String(i + 1).padStart(2, "0")}</span><span>{label}</span></button>
+    ))}
+  </nav>
+)
+
+// Table of contents: sticky gradient card on tablet/desktop, a bar that opens an overlay on phones.
+export function SideNavbar({ sections, active, scrollTo }: { sections: LegalSection[]; active?: string; scrollTo: (id: string) => void }) {
+  const [open, setOpen] = useState(false)
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : ""
+    return () => { document.body.style.overflow = "" }
+  }, [open])
+  const select = (id: string) => { scrollTo(id); setOpen(false) }
   return (
-    <div>
-      <Header locale="en" />
-      <main className="legal-wrap">
-        <div className="legal-layout">
-          <aside className="rail" aria-label="Table of Contents">
-            <div className="rail-sticky">
-              <nav className="toc" aria-label="Table of Contents"><h2>Table of Contents</h2>{list()}</nav>
-            </div>
-          </aside>
-          <div className="legal-main">
-            <div className="legal-toc-bar">
-              {open && <div className="legal-toc-backdrop" onClick={() => setOpen(false)} aria-hidden="true" />}
-              <button type="button" className="legal-toc-toggle" aria-expanded={open} aria-controls="legal-toc-panel" onClick={() => setOpen(o => !o)}>
-                Table of Contents
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </button>
-              <nav id="legal-toc-panel" className="toc legal-toc-panel" aria-label="Table of Contents" hidden={!open}>{list(() => setOpen(false))}</nav>
-            </div>
-            <div className="head">
-              <h1>{title}</h1>
-              <p className="legal-updated">Last Updated: {updated}</p>
-              {intro && <div className="legal-text">{intro}</div>}
-            </div>
-            <div className="legal-body">{children}</div>
+    <>
+      <div className="el-toc-bar">
+        <button type="button" onClick={() => setOpen(true)} aria-expanded={open}><span>Table of Contents</span><TocChevron /></button>
+      </div>
+      {open && (
+        <div className="el-toc-overlay" onClick={() => setOpen(false)}>
+          <div className="el-toc-panel" onClick={e => e.stopPropagation()}>
+            <button type="button" className="el-toc-close" onClick={() => setOpen(false)} aria-expanded="true">
+              <span>Table of Contents</span><span className="flip"><TocChevron /></span>
+            </button>
+            <TocList sections={sections} active={active} onSelect={select} />
           </div>
         </div>
-      </main>
-      <Footer locale="en" />
-    </div>
+      )}
+      <aside className="el-toc">
+        <div className="el-toc-card">
+          <p className="el-toc-title">Table of Contents</p>
+          <TocList sections={sections} active={active} onSelect={scrollTo} />
+        </div>
+      </aside>
+    </>
   )
 }
 
-export const LegalHead = ({ title, slug }: { title: string; slug: string }) => (
-  <>
-    <title>{`${title} | ${ui.en.brand}`}</title>
-    <HeadCommon locale="en" alternates={[]} seo={{ title, description: `${title} for ${ui.en.brand}.`, path: `/${slug}/` }} />
-  </>
+export const Section = ({ id, title, children }: { id: string; title: string; children: React.ReactNode }) => (
+  <section id={id} className="el-section">
+    <h2>{title}</h2>
+    <div className="el-section-body">{children}</div>
+  </section>
 )
+
+// Whole page body: table of contents, title block (h1, Last Updated, intro) and the sections.
+export function LegalPage({ title, updated, sections, intro, children }: {
+  title: React.ReactNode; updated: string; sections: LegalSection[]; intro?: React.ReactNode; children: React.ReactNode
+}) {
+  const { active, scrollTo } = useActiveSection(sections)
+  return (
+    <div className="evafi-legal">
+      <main className="el-grid">
+        <SideNavbar sections={sections} active={active} scrollTo={scrollTo} />
+        <div className="el-main">
+          <div className="el-title">
+            <h1>{title}</h1>
+            <p className="el-updated">Last Updated: {updated}</p>
+            {intro}
+          </div>
+          <div className="el-sections">{children}</div>
+        </div>
+      </main>
+    </div>
+  )
+}

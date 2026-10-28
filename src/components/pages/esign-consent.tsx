@@ -1,8 +1,10 @@
 import * as React from "react"
-import { LegalHead, LegalPage, Section } from "../components/legal-page"
+import type { PageView } from "."
+import { LegalPage, Section } from "../legal-page"
 
 // Copied from EvaFi src/ui/landing/EConsent.tsx (origin/main 5f00afd). Keep the wording 1:1; only the
-// name EvaFi and its phone and email are swapped (EVA-350).
+// name EvaFi and its phone and email are swapped (EVA-350). /esign-consent/ (footer "E-Comm Consent"), EvaFi's design
+// like Do Not Sell or Share (LegalPage); header, footer and <head> come from templates/page.tsx.
 // TODO: placeholder until Debt Advice 101 has its own number (EVA-328). Replace before launch.
 const PHONE = "(877) 382-3422"
 const EMAIL = "privacy@debtadvice101.com"
@@ -16,10 +18,10 @@ const SECTIONS = [
 ]
 const TITLE = "Disclosure and Consent to Electronic Communication"
 
-export default function EConsent() {
+export const EConsent: PageView = () => {
   return (
     <LegalPage title={TITLE} updated="August 2026" sections={SECTIONS} intro={<>
-      <p>
+      <p className="el-lead">
         You understand that in order to submit a request to and engage
         in loans and related transactions with Debt Advice 101, our Lending
         Partners and their service providers, as well as other Service
@@ -32,7 +34,7 @@ export default function EConsent() {
         receive Electronic Communications and engage in transactions and
         enter into contracts and agreements electronically.
       </p>
-      <p>
+      <p className="el-lead">
         <b>
           Nationwide Financial Group LLC d/b/a Debt Advice 101 (&quot;Debt Advice 101&quot;)
         </b>{" "}
@@ -61,7 +63,7 @@ export default function EConsent() {
         financial products and services, and for other business
         purposes. Message and data rates may apply.
       </p>
-      <p>
+      <p className="el-lead">
         The Electronic Communications may be made available to you
         through our website (referred to as the &quot;Site&quot;), emails,
         texting, or other electronic communications. All Electronic
@@ -70,7 +72,7 @@ export default function EConsent() {
         of this consent, the Terms of Use, and any other Electronic
         Communication that is important to you for your records.
       </p>
-      <p>
+      <p className="el-lead">
         This consent applies to all interactions, whether through a
         telephone or online concerning you and the Site and includes
         those interactions engaged in on any mobile device, including
@@ -82,7 +84,7 @@ export default function EConsent() {
         be provided online or through your designated e-mail address,
         text message to your cell phone, or the Site.
       </p>
-      <p>
+      <p className="el-lead">
         Notwithstanding your consent to Electronic Communications, the
         Company may send you paper copies of documents, disclosures and
         notices.
@@ -245,5 +247,4 @@ export default function EConsent() {
     </LegalPage>
   )
 }
-
-export const Head = () => <LegalHead title={TITLE} slug="esign-consent" />
+EConsent.ownLayout = true

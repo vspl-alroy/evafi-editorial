@@ -73,7 +73,7 @@ export const Footer = ({ locale }: { locale: Locale }) => {
     <footer className="foot">
       <div className="frame gutter">
         <p className="wordmark">{t.brand}<span>.</span></p>
-        <div className="foot-links">{t.footerLinks.map(l => (l.to ? <Link key={l.label} to={l.to}>{l.label}</Link> : <span key={l.label}>{l.label}</span>))}</div>
+        <nav className="foot-links">{t.footerLinks.map(l => <Link key={l.slug} to={localePath(locale, l.slug)}>{l.label}</Link>)}</nav>
         <p className="disclosure"><b>{t.ad}.</b> {t.disclosure}</p>
         <p className="disclosure">© {new Date().getFullYear()} {t.brand}</p>
       </div>
