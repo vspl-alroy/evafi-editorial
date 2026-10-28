@@ -306,6 +306,7 @@ h1 { font-family: var(--serif); font-variation-settings: "opsz" 72; font-weight:
 .el-lead + .el-lead, .el-list-disc, .el-lead2 { margin-top: 1.25em; }
 .el-list-disc { padding-left: 1.2em; display: grid; gap: 8px; }
 .el-lead a, .el-section-body a { color: var(--way); font-weight: 700; text-underline-offset: 3px; }
+.el-lead a.el-plain, .el-section-body a.el-plain { color: inherit; font-weight: inherit; text-decoration: none; cursor: pointer; }
 .el-lead b, .el-section-body b { color: var(--ink); }
 
 /* Sections */
