@@ -8,7 +8,9 @@ import { Privacy } from "./privacy"
 import { Terms } from "./terms"
 
 export interface PageViewProps { locale: Locale }
-export type PageView = React.ComponentType<PageViewProps> & { evafi?: boolean }
+// ownLayout: the page renders its own title and layout (legal pages: Table of Contents + sections, .evafi-legal styles).
+// Without it, templates/page.tsx shows the footer label as <h1> and the component in an article column.
+export type PageView = React.ComponentType<PageViewProps> & { ownLayout?: boolean }
 
 // Body of each footer page, by slug (footerLinks in src/i18n.ts). gatsby-node creates /<slug>/ and /es/<slug>/ for each.
 export const pageViews: Record<string, PageView> = {

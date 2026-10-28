@@ -39,7 +39,7 @@ const formatPhone = (input: string) => {
 const Chevron = ({ size = 25, stroke = "#212121", d = "M4.5 7.5L11.6464 14.6464C11.8417 14.8417 12.1583 14.8417 12.3536 14.6464L19.5 7.5", box = 25 }: { size?: number; stroke?: string; d?: string; box?: number }) => (
   <svg width={size} height={size} viewBox={`0 0 ${box} ${box}`} fill="none" aria-hidden="true"><path d={d} stroke={stroke} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
 )
-const TocChevron = () => <Chevron size={16} box={16} stroke="#411f0a" d="M3 6L8 11L13 6" />
+const TocChevron = () => <Chevron size={16} box={16} stroke="currentColor" d="M3 6L8 11L13 6" />
 const Tick = ({ disabled }: { disabled?: boolean }) => (
   <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="tick"><path d="M4.85 7.45L7.24 9.99L11.64 4.92" stroke={disabled ? "#757575" : "#000000"} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" /></svg>
 )
@@ -286,7 +286,7 @@ function useActiveSection() {
 const TocList = ({ active, onSelect }: { active: string; onSelect: (id: string) => void }) => (
   <nav className="el-toc-list">
     {SECTIONS.map(({ id, label }, i) => (
-      <button key={id} type="button" className={active === id ? "on" : undefined} onClick={() => onSelect(id)}>{i + 1}.<span>&nbsp;{label}</span></button>
+      <button key={id} type="button" className={active === id ? "on" : undefined} onClick={() => onSelect(id)}><span className="n">{String(i + 1).padStart(2, "0")}</span><span>{label}</span></button>
     ))}
   </nav>
 )
@@ -532,4 +532,4 @@ export const NoSellShare: PageView = ({ locale }) => {
     </div>
   )
 }
-NoSellShare.evafi = true
+NoSellShare.ownLayout = true

@@ -15,7 +15,7 @@ export default function Page({ pageContext: { slug, title, locale, alternates } 
   return (
     <div>
       <Header locale={locale} alternates={alternates} />
-      {View?.evafi ? (
+      {View?.ownLayout ? (
         <View locale={locale} />
       ) : (
         <main className="frame gutter">
@@ -28,13 +28,12 @@ export default function Page({ pageContext: { slug, title, locale, alternates } 
   )
 }
 
-export const Head = ({ pageContext: { slug, title, locale, alternates }, location }: HeadProps<object, Ctx>) => {
+export const Head = ({ pageContext: { title, locale, alternates }, location }: HeadProps<object, Ctx>) => {
   const full = `${title} | ${ui[locale].brand}`
   return (
     <>
       <title>{full}</title>
       <HeadCommon locale={locale} alternates={alternates} seo={{ title: full, description: ui[locale].description, path: location.pathname }} />
-      {pageViews[slug]?.evafi && <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Poppins:wght@400;500;600&display=swap" />}
     </>
   )
 }

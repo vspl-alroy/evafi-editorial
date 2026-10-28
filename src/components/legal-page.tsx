@@ -4,12 +4,12 @@ import { useEffect, useState } from "react"
 // Layout of the legal pages linked from the footer (E-Comm Consent, and later Terms, Privacy…), in EvaFi's design:
 // EvaFi's src/components/Policies.tsx (SideNavbar, Section) and the title block of its legal pages.
 // Styles: .evafi-legal / .el-* in _article.scss. Header, footer and <head> come from templates/page.tsx: register the
-// page in src/components/pages/index.ts with evafi = true.
+// page in src/components/pages/index.ts with ownLayout = true.
 
 export interface LegalSection { id: string; label: string }
 
 const TocChevron = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6L8 11L13 6" stroke="#411f0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6L8 11L13 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
 )
 
 // Highlights the section being read (EvaFi's useSectionScroll): the last one whose top passed 40% of the screen.
@@ -36,7 +36,7 @@ export function useActiveSection(sections: LegalSection[]) {
 const TocList = ({ sections, active, onSelect }: { sections: LegalSection[]; active?: string; onSelect: (id: string) => void }) => (
   <nav className="el-toc-list">
     {sections.map(({ id, label }, i) => (
-      <button key={id} type="button" className={active === id ? "on" : undefined} onClick={() => onSelect(id)}>{i + 1}.<span>&nbsp;{label}</span></button>
+      <button key={id} type="button" className={active === id ? "on" : undefined} onClick={() => onSelect(id)}><span className="n">{String(i + 1).padStart(2, "0")}</span><span>{label}</span></button>
     ))}
   </nav>
 )

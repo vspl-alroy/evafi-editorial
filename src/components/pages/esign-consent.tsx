@@ -247,4 +247,4 @@ export const EConsent: PageView = () => {
     </LegalPage>
   )
 }
-EConsent.evafi = true
+EConsent.ownLayout = true
