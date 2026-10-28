@@ -315,6 +315,20 @@ h1 { font-family: var(--serif); font-variation-settings: "opsz" 72; font-weight:
 @media (min-width: 1040px) { .el-section { scroll-margin-top: 24px; } }
 .evafi-legal .el-section h2 { margin: 0 0 .7em; font-family: var(--sans); font-size: 23px; font-weight: 800; line-height: 1.22; letter-spacing: -.01em; color: var(--ink); text-wrap: balance; }
 .el-section-body > p + p { margin-top: 1.25em; }
+/* Two-column rows of the California policy (key terms, tables): hairline rules like the article's lists */
+.el-section-body :where(p, ul) + :where(p, ul) { margin-top: .9em; }
+.el-section-body > :where(p, ul) + :where(.el-kv, .el-cols), .el-section-body > :where(.el-kv, .el-cols) + :where(p, ul) { margin-top: 1.25em; }
+.el-kv, .el-cols { display: grid; gap: 4px 24px; padding-block: 12px; border-top: 1px solid var(--rule); font-size: 17px; line-height: 1.55; }
+.el-kv + :not(.el-kv), .el-cols + :not(.el-cols) { border-top: 1px solid var(--rule); padding-top: 1.25em; }
+.el-cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.el-cols-stack { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+@media (min-width: 560px) {
+  .el-kv { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+  .el-cols { gap: 24px; }
+  .el-cols-stack { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+}
+.el-kv > *, .el-cols > * { margin-top: 0; } /* the columns of a row start level */
+.el-block { display: block; margin-top: .9em; }
 
 /* Form (interface type: Libre Franklin) */
 .el-form { display: flex; flex-direction: column; gap: 16px; font-family: var(--sans); font-size: 16px; line-height: 1.5; }
