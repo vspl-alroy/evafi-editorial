@@ -62,7 +62,7 @@ export const ui: Record<Locale, UI> = {
     footerLinks: [
       { label: "About", slug: "about" },
       { label: "Advertising disclosure", slug: "advertising-disclosure" },
-      { label: "Privacy", slug: "privacy" },
+      { label: "Privacy Policy", slug: "privacy-policy" },
       { label: "Terms", slug: "terms" },
       { label: "CA Privacy Policy", slug: "california-policy" },
       { label: "Do Not Sell or Share", slug: "do-not-sell-or-share" },
@@ -103,7 +103,7 @@ export const ui: Record<Locale, UI> = {
     footerLinks: [
       { label: "Acerca de", slug: "about" },
       { label: "Divulgación publicitaria", slug: "advertising-disclosure" },
-      { label: "Privacidad", slug: "privacy" },
+      { label: "Política de privacidad", slug: "privacy-policy" }, // page text is English only for now
       { label: "Términos", slug: "terms" },
       { label: "Política de privacidad de California", slug: "california-policy" }, // page text is English only for now
       { label: "No vender ni compartir", slug: "do-not-sell-or-share" },

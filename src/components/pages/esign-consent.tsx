@@ -2,10 +2,6 @@ import * as React from "react"
 import type { PageView } from "."
 import { LegalPage, Section } from "../legal-page"
 
-// Copied from EvaFi src/ui/landing/EConsent.tsx (origin/main 5f00afd). Keep the wording 1:1; only the
-// name EvaFi and its phone and email are swapped (EVA-350). /esign-consent/ (footer "E-Comm Consent"), EvaFi's design
-// like Do Not Sell or Share (LegalPage); header, footer and <head> come from templates/page.tsx.
-// TODO: placeholder until Debt Advice 101 has its own number (EVA-328). Replace before launch.
 const PHONE = "(877) 382-3422"
 const EMAIL = "privacy@debtadvice101.com"
 

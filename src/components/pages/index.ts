@@ -5,7 +5,7 @@ import { AdvertisingDisclosure } from "./advertising-disclosure"
 import { CaliforniaPolicy } from "./california-policy"
 import { EConsent } from "./esign-consent"
 import { NoSellShare } from "./NoSellShare"
-import { Privacy } from "./privacy"
+import { PrivacyPolicy } from "./privacy-policy"
 import { Terms } from "./terms"
 
 export interface PageViewProps { locale: Locale }
@@ -17,7 +17,7 @@ export type PageView = React.ComponentType<PageViewProps> & { ownLayout?: boolea
 export const pageViews: Record<string, PageView> = {
   about: About,
   "advertising-disclosure": AdvertisingDisclosure,
-  privacy: Privacy,
+  "privacy-policy": PrivacyPolicy,
   terms: Terms,
   "california-policy": CaliforniaPolicy,
   "do-not-sell-or-share": NoSellShare,

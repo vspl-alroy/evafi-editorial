@@ -328,6 +328,20 @@ h1 { font-family: var(--serif); font-variation-settings: "opsz" 72; font-weight:
   .el-cols-stack { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
 }
 .el-kv > *, .el-cols > * { margin-top: 0; } /* the columns of a row start level */
+/* Privacy Policy categories table: Category | (Examples | Collected), hairline rows, no boxes */
+.el-table, .el-table-inner { width: 100%; table-layout: fixed; border-collapse: collapse; }
+.el-table { margin-top: 1.25em; font-size: 16px; line-height: 1.5; }
+.el-table col:first-child { width: 25%; }
+.el-table > tbody > tr > td { vertical-align: top; padding-block: 12px; border-top: 1px solid var(--rule); overflow-wrap: break-word; hyphens: auto; }
+.el-table > tbody > tr:last-child > td { border-bottom: 1px solid var(--rule); }
+.el-table > tbody > tr:first-child { font-family: var(--sans); font-weight: 700; color: var(--ink); }
+.el-table-inner col:first-child { width: 55%; }
+@media (min-width: 560px) { .el-table-inner col:first-child { width: 74%; } }
+.el-table td + td { padding-left: 16px; }
+@media (min-width: 560px) { .el-table td + td { padding-left: 24px; } }
+.el-table-inner td { vertical-align: top; padding: 0; }
+.el-table-inner tr + tr td { padding-top: 10px; }
+.el-table :where(td, th) > p + p { margin-top: .6em; }
 .el-block { display: block; margin-top: .9em; }
 
 /* Form (interface type: Libre Franklin) */
