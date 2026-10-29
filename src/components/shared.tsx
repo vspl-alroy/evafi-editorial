@@ -7,12 +7,33 @@ import hero from "../images/hero.png"
 
 export const fillState = (s: string, state: string) => s.replaceAll("{State}", state)
 
-// {State} comes from ?state=Texas; the static build renders the default and swaps it after hydration.
+// {State} comes from the visitor's IP (US only); ?state=Texas is the fallback when the lookup fails or is outside the US.
+// The static build renders the default and swaps it after hydration. The answer is kept per session (one call per visitor).
+// ponytail: ipapi.co free tier is ~1000 calls/day per site; swap GEO_URL (any JSON with region + country_code) or move to an edge function if it runs out.
+const GEO_URL = "https://ipapi.co/json/"
+async function stateFromIp(): Promise<string | undefined> {
+  try {
+    const cached = sessionStorage.getItem("da101_state")
+    if (cached !== null) return cached || undefined
+  } catch {}
+  let found = ""
+  try {
+    const r = await fetch(GEO_URL, { signal: AbortSignal.timeout(3000) })
+    const g = await r.json()
+    if (g.country_code === "US" && typeof g.region === "string") found = g.region
+    try { sessionStorage.setItem("da101_state", found) } catch {}
+  } catch {} // blocked, offline, rate limited: not cached, fall back
+  return found || undefined
+}
+
 export function useStateName(locale: Locale) {
   const [state, setState] = React.useState(ui[locale].defaultState)
   React.useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("state")?.trim()
     if (q) setState(q)
+    let live = true
+    stateFromIp().then(ip => { if (live && ip) setState(ip) })
+    return () => { live = false }
   }, [])
   return state
 }

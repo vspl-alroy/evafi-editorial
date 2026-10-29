@@ -89,9 +89,9 @@ The ad link is the page plus the UTM: `https://<site>/adv-23-2b/?comet_source=ta
 
 ### State (`{State}`)
 
-Put `{State}` where the state name should appear, for example in the headline. By default it shows "your state".
-If the traffic link includes `?state=Texas` (for example `https://<site>/how-to-get-out-of-debt/?state=Texas`) it shows "Texas".
-Test it by adding `?state=Texas` to the article address.
+Put `{State}` where the state name should appear, for example in the headline.
+The reader's state is looked up from their IP address (US visitors only). If that fails, or the visitor is outside the US, `?state=Texas` in the link is used, and without either it shows "your state".
+Test the fallback by adding `?state=Texas` to the article address (an IP result wins over it).
 
 ## 3. Add the images
 
