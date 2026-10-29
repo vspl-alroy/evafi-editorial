@@ -3,7 +3,7 @@ import path from "path"
 import sharp from "sharp"
 import type { GatsbyNode } from "gatsby"
 import { expandVariants, parseArticle } from "./src/markdown"
-import { SITE_URL, defaultLocale, localePath, locales } from "./src/i18n"
+import { SITE_URL, defaultLocale, localePath, locales, ui } from "./src/i18n"
 import type { Alternate, Locale } from "./src/i18n"
 import { excerpt } from "./src/content"
 import type { BodyItem, Img, Teaser, Variant } from "./src/content"
@@ -121,6 +121,14 @@ export const createPages: GatsbyNode["createPages"] = ({ actions }) => {
         context: { ...variant, alternates: alternatesFor(variant.slug) },
       })
     })
+    // Footer pages (About, Privacy, ...): one per footerLinks entry, body = its component in src/components/pages/.
+    ui[locale].footerLinks.forEach(({ slug, label }) => {
+      actions.createPage({
+        path: localePath(locale, slug),
+        component: path.resolve("src/templates/page.tsx"),
+        context: { slug, title: label, locale, alternates: locales.map(l => ({ locale: l, path: localePath(l, slug) })) },
+      })
+    })
   }
 }
 
@@ -137,7 +145,7 @@ export const onPostBuild: GatsbyNode["onPostBuild"] = () => {
   for (const locale of locales) {
     const articles = markdownVariants(locale)
     if (locale === defaultLocale || articles.length) slugs.set("", [...(slugs.get("") ?? []), locale])
-    for (const v of articles.filter(v => !v.unlisted)) slugs.set(v.slug, [...(slugs.get(v.slug) ?? []), locale])
+    for (const slug of [...articles.filter(v => !v.unlisted).map(v => v.slug), ...ui[locale].footerLinks.map(l => l.slug)]) slugs.set(slug, [...(slugs.get(slug) ?? []), locale])
   }
   const urls = [...slugs].map(([slug, ls]) => {
     const alts = ls.length > 1 ? ls.map(l => `<xhtml:link rel="alternate" hreflang="${l}" href="${SITE_URL}${PREFIX}${localePath(l, slug)}"/>`).join("") : ""

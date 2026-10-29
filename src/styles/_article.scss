@@ -223,6 +223,7 @@ h1 { font-family: var(--serif); font-variation-settings: "opsz" 72; font-weight:
 .foot { border-top: 1px solid var(--rule); margin-top: 24px; padding-block: 28px 40px; }
 .foot .wordmark { text-align: left; font-size: 1.5rem; }
 .foot-links { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: .8rem; color: var(--muted); margin: 12px 0 16px; }
+.foot-links a { color: inherit; text-underline-offset: 3px; }
 .disclosure { font-size: .8rem; line-height: 1.55; color: var(--muted); max-width: 80ch; margin: 0 0 10px; }
 .disclosure b { color: var(--text); }
 .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 14px; border-radius: 6px; font-size: .84rem; max-width: min(92vw, 440px); z-index: 30; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
@@ -290,3 +291,165 @@ h1 { font-family: var(--serif); font-variation-settings: "opsz" 72; font-weight:
   .mpc-opts { grid-template-columns: minmax(0, 1fr); }
   .btn { width: 100%; }
 }
+
+.page { padding-block: 8px 48px; }
+
+.foot-links a { text-decoration: none; }
+.foot-links a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+
+/* ---- Legal pages (components/pages/*.tsx with ownLayout = true: Do Not Sell or Share, E-Comm Consent) ----
+   Content copied 1:1 from EvaFi, styled with the Debt Advice 101 design system (tokens.json): Newsreader for reading,
+   Libre Franklin for the interface, ink headlines, accent-way for every button and link, accent-trap for errors,
+   square boxes (radius-option 6px on fields and buttons), borders instead of shadows. Layout follows the article:
+   1040px frame, 640px text column, 280px sticky rail from 1040px (inline Table of Contents bar below that). */
+.evafi-legal { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.5; }
+.evafi-legal button { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: inherit; }
+
+.el-grid { max-width: 1040px; margin: 0 auto; padding: 8px 16px 48px; display: grid; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 720px) { .el-grid { padding-inline: 32px; } }
+@media (min-width: 1040px) {
+  .el-grid { grid-template-columns: minmax(0, 640px) 280px; justify-content: space-between; column-gap: 48px; padding-top: 32px; }
+  .el-main { grid-column: 1; grid-row: 1; }
+  .el-toc { grid-column: 2; grid-row: 1; }
+}
+.el-main { min-width: 0; }
+
+/* Table of contents: the article rail (.toc) on desktop, a sticky bar with a dropdown panel below 1040px */
+.el-toc { display: none; }
+@media (min-width: 1040px) { .el-toc { display: block; } }
+.el-toc-card { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); }
+.el-toc-title { margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1px solid var(--ink); font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); }
+.el-toc-list { display: flex; flex-direction: column; max-height: calc(100vh - 120px); overflow-y: auto; scrollbar-width: none; }
+.evafi-legal .el-toc-list button { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--rule); text-align: left; font-size: 14.5px; line-height: 1.35; color: var(--text); cursor: pointer; }
+.evafi-legal .el-toc-list button:hover { color: var(--ink); }
+.el-toc-list .n { font-size: 12.5px; font-weight: 800; color: var(--muted); padding-top: 1px; font-variant-numeric: tabular-nums; }
+.evafi-legal .el-toc-list button.on { color: var(--ink); font-weight: 700; }
+.el-toc-list button.on .n { color: var(--trap); }
+.el-toc-bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); padding-block: 10px; }
+@media (min-width: 1040px) { .el-toc-bar { display: none; } }
+.evafi-legal .el-toc-bar button, .evafi-legal .el-toc-close { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; color: var(--ink); }
+.evafi-legal .el-toc-bar button { padding: 12px 14px; border: 1px solid var(--ink); background: var(--bg); }
+.el-toc-bar span, .el-toc-close span { font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.evafi-legal .el-toc-close { padding: 12px 0; border-bottom: 1px solid var(--ink); }
+.el-toc-close .flip { display: flex; transform: rotate(180deg); }
+.el-toc-overlay { position: fixed; inset: 0; z-index: 9999; background: #111214a6; overflow-y: auto; }
+@media (min-width: 1040px) { .el-toc-overlay { display: none; } }
+.el-toc-panel { margin: 72px 16px 0; padding: 0 14px 4px; max-height: 75vh; overflow-y: auto; background: var(--bg); border: 1px solid var(--ink); }
+.el-toc-panel .el-toc-list { max-height: none; }
+.evafi-legal .el-toc-panel .el-toc-list button:last-child { border-bottom: 0; }
+
+/* Title block: like the article head */
+.el-title { padding-block: 20px 8px; max-width: 800px; }
+@media (min-width: 1040px) { .el-title { padding-top: 0; } }
+.evafi-legal .el-title h1 { margin: 0 0 12px; font-size: 32px; line-height: 1.07; letter-spacing: -.018em; overflow-wrap: break-word; }
+@media (min-width: 720px) { .evafi-legal .el-title h1 { font-size: 48px; } }
+.el-states { display: block; margin-top: 12px; font-size: 21px; line-height: 1.3; letter-spacing: -.01em; }
+@media (min-width: 720px) { .el-states { font-size: 26px; } }
+.el-updated { margin: 0 0 18px; font-size: 13.5px; color: var(--muted); }
+.el-lead, .el-list-disc, .el-lead2, .el-section-body { font-family: var(--serif); font-size: 19px; line-height: 1.62; color: var(--text); text-wrap: pretty; }
+.el-lead + .el-lead, .el-list-disc, .el-lead2 { margin-top: 1.25em; }
+.el-list-disc { padding-left: 1.2em; display: grid; gap: 8px; }
+.el-lead a, .el-section-body a { color: var(--way); font-weight: 700; text-underline-offset: 3px; }
+.el-lead a.el-plain, .el-section-body a.el-plain { color: inherit; font-weight: inherit; text-decoration: none; cursor: pointer; }
+.el-lead b, .el-section-body b { color: var(--ink); }
+
+/* Sections */
+.el-sections { display: flex; flex-direction: column; gap: 48px; padding-top: 40px; }
+.el-section { scroll-margin-top: 76px; }
+@media (min-width: 1040px) { .el-section { scroll-margin-top: 24px; } }
+.evafi-legal .el-section h2 { margin: 0 0 .7em; font-family: var(--sans); font-size: 23px; font-weight: 800; line-height: 1.22; letter-spacing: -.01em; color: var(--ink); text-wrap: balance; }
+.el-section-body > p + p { margin-top: 1.25em; }
+/* Two-column rows of the California policy (key terms, tables): hairline rules like the article's lists */
+.el-section-body :where(p, ul) + :where(p, ul) { margin-top: .9em; }
+.el-section-body > :where(p, ul) + :where(.el-kv, .el-cols), .el-section-body > :where(.el-kv, .el-cols) + :where(p, ul) { margin-top: 1.25em; }
+.el-kv, .el-cols { display: grid; gap: 4px 24px; padding-block: 12px; border-top: 1px solid var(--rule); font-size: 17px; line-height: 1.55; }
+.el-kv + :not(.el-kv), .el-cols + :not(.el-cols) { border-top: 1px solid var(--rule); padding-top: 1.25em; }
+.el-cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.el-cols-stack { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+@media (min-width: 560px) {
+  .el-kv { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+  .el-cols { gap: 24px; }
+  .el-cols-stack { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+}
+.el-kv > *, .el-cols > * { margin-top: 0; } /* the columns of a row start level */
+/* Privacy Policy categories table: Category | (Examples | Collected), hairline rows, no boxes */
+.el-table, .el-table-inner { width: 100%; table-layout: fixed; border-collapse: collapse; }
+.el-table { margin-top: 1.25em; font-size: 16px; line-height: 1.5; }
+.el-table col:first-child { width: 25%; }
+.el-table > tbody > tr > td { vertical-align: top; padding-block: 12px; border-top: 1px solid var(--rule); overflow-wrap: break-word; hyphens: auto; }
+.el-table > tbody > tr:last-child > td { border-bottom: 1px solid var(--rule); }
+.el-table > tbody > tr:first-child { font-family: var(--sans); font-weight: 700; color: var(--ink); }
+.el-table-inner col:first-child { width: 55%; }
+@media (min-width: 560px) { .el-table-inner col:first-child { width: 74%; } }
+.el-table td + td { padding-left: 16px; }
+@media (min-width: 560px) { .el-table td + td { padding-left: 24px; } }
+.el-table-inner td { vertical-align: top; padding: 0; }
+.el-table-inner tr + tr td { padding-top: 10px; }
+.el-table :where(td, th) > p + p { margin-top: .6em; }
+.el-block { display: block; margin-top: .9em; }
+
+/* Form (interface type: Libre Franklin) */
+.el-form { display: flex; flex-direction: column; gap: 16px; font-family: var(--sans); font-size: 16px; line-height: 1.5; }
+.el-row { display: flex; flex-direction: column; gap: 16px; }
+@media (min-width: 560px) { .el-row { flex-direction: row; } }
+.el-field { position: relative; width: 100%; min-width: 0; }
+@media (min-width: 560px) { .el-field { flex: 1; } }
+.el-box { position: relative; }
+.el-box input { width: 100%; padding: 25px 16px 8px; border: 1px solid var(--rule); border-radius: 6px; background: var(--bg); font: inherit; font-size: 16px; line-height: 24px; color: var(--text); outline: none; transition: border-color .15s; text-overflow: ellipsis; }
+.el-box input:focus { border-color: var(--way); }
+.el-box input[aria-invalid="true"], .evafi-legal .el-select > button[aria-invalid="true"] { border-color: var(--trap); }
+.el-box label, .el-ph { position: absolute; left: 16px; line-height: 16.5px; pointer-events: none; user-select: none; display: flex; align-items: center; gap: 2px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--muted); transition: all .2s ease-out; }
+.el-box label.up, .el-ph.up { top: 8px; transform: none; font-size: 12px; color: var(--muted); }
+.el-box label { z-index: 20; }
+.req { color: var(--trap); font-weight: 700; }
+.el-err { margin-top: 4px; padding-inline: 16px; font-size: 13.5px; line-height: 1.5; color: var(--trap); }
+/* Address suggestions (AddressAutocompleteField) */
+.el-suggest { position: absolute; left: 0; top: calc(100% + 4px); z-index: 30; width: 100%; max-height: 256px; overflow-y: auto; margin: 0; padding: 0; list-style: none; border: 1px solid var(--ink); background: var(--bg); }
+.evafi-legal .el-suggest button { display: block; width: 100%; padding: 12px 16px; border-bottom: 1px solid var(--rule); text-align: left; font-size: 15px; line-height: 1.5; color: var(--text); cursor: pointer; outline: none; }
+.evafi-legal .el-suggest button:hover, .evafi-legal .el-suggest button.on { background: #2f62b014; }
+/* Dropdown "I am submitting this information on behalf of" */
+.el-select { position: relative; width: 100%; }
+.evafi-legal .el-select > button { position: relative; display: flex; align-items: center; min-height: 58px; width: 100%; cursor: pointer; border-radius: 6px; border: 1px solid var(--rule); background: var(--bg); padding: 8px 16px; text-align: left; }
+.evafi-legal .el-select > button[aria-expanded="true"] { border-color: var(--way); }
+@media (min-width: 560px) { .evafi-legal .el-select > button { height: 58px; padding-block: 0; } }
+.el-sizer { visibility: hidden; display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 4px; padding-right: 24px; font-size: 12px; line-height: 16.5px; }
+.el-sizer span:first-child { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: break-word; }
+.el-sizer span:last-child { font-size: 16px; line-height: 24px; }
+@media (min-width: 560px) { .el-sizer { display: none; } }
+.el-ph { right: 40px; z-index: 10; align-items: flex-start; white-space: normal; overflow-wrap: break-word; background: var(--bg); padding-inline: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.el-ph .req { margin-right: 2px; }
+@media (min-width: 560px) { .el-ph { right: auto; display: flex; align-items: center; white-space: nowrap; overflow: visible; } }
+.el-value { position: absolute; bottom: 8px; left: 16px; font-size: 16px; line-height: 24px; color: var(--text); }
+.el-arrow { margin-left: auto; display: flex; width: 20px; height: 20px; transition: transform .2s; }
+.el-arrow.open { transform: rotate(180deg); }
+.el-list { position: absolute; left: 0; top: 62px; z-index: 50; width: 100%; padding-block: 4px; border: 1px solid var(--ink); background: var(--bg); }
+.evafi-legal .el-list button { display: block; width: 100%; padding: 12px 16px; text-align: left; font-size: 16px; line-height: 24px; color: var(--text); cursor: pointer; }
+.evafi-legal .el-list button:hover { background: #2f62b014; }
+.evafi-legal .el-list button:disabled { color: var(--muted); cursor: default; background: none; }
+.el-list .tick { display: inline; margin-right: 8px; vertical-align: middle; visibility: hidden; }
+.el-list button:hover .tick { visibility: visible; }
+/* Rights checkboxes, notice and Submit */
+.el-rights { margin-top: 8px; margin-bottom: 16px; font-size: 16px; line-height: 1.5; color: var(--text); }
+.el-rights > * + * { margin-top: 14px; }
+.el-rights > p:first-child { font-size: 15px; font-weight: 700; color: var(--ink); }
+.el-check { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.el-check.top { align-items: flex-start; }
+.el-check input { width: 18px; height: 18px; accent-color: var(--way); flex-shrink: 0; margin: 0; border-radius: 3px; }
+.el-check.top input { margin-top: 3px; }
+.el-medium { font-weight: 700; color: var(--ink); }
+.evafi-legal .el-submit { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 12px 32px; border-radius: 6px; background: var(--way); color: var(--way-ink); font-size: 15px; font-weight: 700; line-height: 1.4; cursor: pointer; }
+.evafi-legal .el-submit:hover { background: #26508f; }
+.evafi-legal .el-submit:disabled { opacity: .6; cursor: not-allowed; }
+
+/* Toast (src/lib/showToast.tsx): square, bordered, no shadow */
+.el-toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; align-items: stretch; overflow: hidden; width: calc(100vw - 32px); background: var(--bg); border: 1px solid var(--ink); font-family: var(--sans); }
+@media (min-width: 640px) { .el-toast { width: 420px; } }
+.el-toast-icon { display: flex; align-items: center; justify-content: center; width: 36px; flex-shrink: 0; }
+.success .el-toast-icon { background: #1e6b3a; }
+.error .el-toast-icon { background: var(--trap); }
+.el-toast-body { flex: 1; padding: 14px 16px; }
+.el-toast-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.el-toast-head p { font-weight: 700; font-size: 15px; color: var(--ink); line-height: 1.4; }
+.evafi-legal .el-toast-head button { margin-top: 2px; flex-shrink: 0; cursor: pointer; display: flex; }
+.el-toast-text { font-size: 13.5px; color: var(--muted); margin-top: 4px; line-height: 1.5; }

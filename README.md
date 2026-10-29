@@ -41,7 +41,8 @@ src/markdown.ts          Markdown subset parser (+ self-check at the bottom)
 src/content.ts           page data types
 src/i18n.ts              locales and UI strings
 src/components/shared.tsx  header, footer, cards, <head> tags
-src/templates/           article.tsx, index.tsx (home), not-found.tsx (404)
+src/components/pages/    footer pages (about.tsx, privacy.tsx, …): text per language, routes from footerLinks in i18n.ts
+src/templates/           article.tsx, index.tsx (home), page.tsx (footer pages), not-found.tsx (404)
 src/styles/              SCSS partials (_tokens, _base, _article)
 gatsby-node.ts           creates pages, copies images, writes sitemap.xml/robots.txt
 .github/workflows/       deploy.yml (GitHub Pages on push to main)
@@ -63,3 +64,12 @@ Work on a branch and open a pull request. There is no CI check on pull requests 
 ### Before launch
 
 See `docs/` and the open items: real footer pages (Privacy, Terms, …), legal review of the copy, real dates, custom domain + `GATSBY_SITE_URL` + `GATSBY_INDEXABLE=1`, a unique hero image per article, native review of the Spanish UI strings in `src/i18n.ts`.
+
+
+## .env.development  
+```bash 
+--Add this to .env.development
+GATSBY_PRIVACY_FORM_URL=http://localhost:8787/
+
+only testing purpose 
+```
