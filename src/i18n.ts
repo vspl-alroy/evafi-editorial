@@ -19,6 +19,8 @@ export interface UI {
   stats: { k: string; v: string; src: string }[] // "By the numbers" strip under the masthead
   statsLabel: string
   ad: string
+  discLink: string // masthead link that opens the Advertiser Disclosure popup
+  discClose: string
   readTime: string // {n} = minutes
   part: string // {i} of {n}
   toc: string
@@ -53,6 +55,8 @@ export const ui: Record<Locale, UI> = {
       { k: "Balances 30+ days delinquent", v: "2.92%", src: "NY Fed, Q1 2026" },
     ],
     ad: "Advertisement",
+    discLink: "Advertiser Disclosure",
+    discClose: "Close",
     readTime: "{n} min read",
     part: "Question {i} of {n}",
     toc: "In this explainer",
@@ -94,6 +98,8 @@ export const ui: Record<Locale, UI> = {
       { k: "Saldos con más de 30 días de atraso", v: "2.92%", src: "Fed de NY, 1T 2026" },
     ],
     ad: "Publicidad",
+    discLink: "Divulgación para anunciantes", // AI draft, needs native review
+    discClose: "Cerrar",
     readTime: "{n} min de lectura",
     part: "Pregunta {i} de {n}",
     toc: "En este explicativo",

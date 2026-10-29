@@ -211,7 +211,6 @@ export default function Article({ pageContext: { slug, title, date, kicker, byli
 
       <main className="frame gutter">
         <div className="head">
-          <div className="ad-row"><span className="ad-label">{t.ad}</span></div>
           {kicker && <p className="kicker">{kicker.split(" · ").map((k, i) => <React.Fragment key={i}>{i > 0 && <> <span>·</span> </>}{k}</React.Fragment>)}</p>}
           <h1 id="headline">{fillState(title, state)}</h1>
           {dek && <p className="dek">{fillState(dek, state)}</p>}
