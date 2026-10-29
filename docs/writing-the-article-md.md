@@ -1,6 +1,6 @@
 # How to write the article `.md` file
 
-A worked guide based on the real article [`content/credit-card-minimum-payments.md`](../content/credit-card-minimum-payments.md). Open that file next to this guide: every piece below is taken from it.
+A worked guide based on the article `content/credit-card-minimum-payments.md`, which has since been removed from the site (see git history; the live example is now [`content/credit-card-debt-options.md`](../content/credit-card-debt-options.md)). Open that file next to this guide: every piece below is taken from it.
 For publishing (file name, GitHub, images, Spanish) see [adding-an-article.md](adding-an-article.md). This guide is only about what goes **inside** the file.
 
 ## 1. The big picture
@@ -203,7 +203,7 @@ Compare fixed-rate debt consolidation offers
 
 ## 7. Starting a new article
 
-1. Copy `content/credit-card-minimum-payments.md` to `content/<new-name>.md` (lowercase letters, digits, hyphens).
+1. Copy `content/credit-card-debt-options.md` to `content/<new-name>.md` (lowercase letters, digits, hyphens).
 2. Replace the headline, the header lines and the hero image.
 3. Rewrite the sections. Delete the boxes you don't need (everything except the headline is optional). Keep the `:::` pairs complete.
 4. Update every link, figure and source. The numbers in the example (balances, rates, years) are only that article's.

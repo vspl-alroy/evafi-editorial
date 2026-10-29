@@ -15,7 +15,7 @@ Example: a file called `how-to-get-out-of-debt.md` becomes `https://<site>/how-t
 
 ## 2. Write the article
 
-Copy `content/credit-card-minimum-payments.md` as a starting point. The rules:
+Copy `content/credit-card-debt-options.md` as a starting point. The rules:
 
 | You want | You write | Notes |
 |---|---|---|
@@ -41,7 +41,7 @@ Things that do **not** work (they show up exactly as typed): italics, headings s
 | `Kicker: Explainer · Credit Cards` | Small red label above the headline |
 | `Byline: 6 min read \| Data: Fed, NY Fed · [Sources](#sources)` | The line under the standfirst, parts split by ` \| ` |
 | `Description: ...` | Text Google shows under the title (default: first paragraph) |
-| `Tracking: da101_credit_cards` | Name used in analytics events (default: the file name) |
+| `Tracking: da101_adv_23` | Name used in analytics events (default: the file name) |
 | `Stats: label \| value \| source ;; label \| value \| source` | Replaces the "By the numbers" strip for this article only |
 | `Part labels: off` | Hides the "Question 1 of 4" label above each section |
 | `Alt headlines:` / `Alt heroes:` | One file, several landing pages: see "Headline and photo variants" |
@@ -51,7 +51,7 @@ A caption under an image: put it on the line right below the image line, `Captio
 
 ### Boxes
 
-A box starts with `::: name` and ends with a line containing only `:::`. See `content/credit-card-minimum-payments.md` for every one of them:
+A box starts with `::: name` and ends with a line containing only `:::`. See `content/credit-card-debt-options.md` for the ones it uses (the others are in git history, in the removed `credit-card-minimum-payments.md`):
 
 | Box | Use |
 |---|---|
