@@ -9,8 +9,8 @@ export const fillState = (s: string, state: string) => s.replaceAll("{State}", s
 
 // {State} comes from the visitor's IP (US only); ?state=Texas is the fallback when the lookup fails or is outside the US.
 // The static build renders the default and swaps it after hydration. The answer is kept per session (one call per visitor).
-// ponytail: ipapi.co free tier is ~1000 calls/day per site; swap GEO_URL (any JSON with region + country_code) or move to an edge function if it runs out.
-const GEO_URL = "https://ipapi.co/json/"
+// ponytail: the ipapi.co fallback is ~1000 calls/day; production should set GATSBY_GEO_URL.
+const GEO_URL = process.env.GATSBY_GEO_URL || "https://ipapi.co/json/" // the Cloudflare Worker in workers/geo.js, see docs/geo-worker.md
 async function stateFromIp(): Promise<string | undefined> {
   try {
     const cached = sessionStorage.getItem("da101_state")
