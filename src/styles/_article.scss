@@ -47,8 +47,8 @@ a { color: inherit; }
 .mast-ad { border: 1.5px solid var(--ink); padding: 2px 6px 1px; font-size: 11px; font-weight: 700; line-height: 1.3; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
 .disc-link { display: inline-flex; align-items: center; gap: 6px; padding: 4px 0 0; border: 0; background: none; font: 400 13px/1.45 var(--sans); color: var(--muted); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 @media (min-width: 720px) { .mast-ad { padding: 3px 8px 2px; } .disc-link { padding-block: 6px; } }
-.disc { width: min(800px, calc(100vw - 32px)); max-height: 90vh; padding: 0; border: 0; background: var(--bg); color: var(--muted); overflow: auto; }
-.disc::backdrop { background: rgba(17, 18, 20, .65); }
+.disc { position: fixed; inset: 0; margin: auto; width: min(800px, calc(100vw - 32px)); height: fit-content; max-height: 90vh; padding: 0; border: 0; background: var(--bg); color: var(--muted); overflow: auto; }
+.disc::backdrop { background: rgba(17, 18, 20, .6); }
 .disc-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--rule); }
 .disc-head h2 { margin: 0; font: 800 17px/1.3 var(--sans); color: var(--ink); }
 .disc-close { display: flex; padding: 4px; border: 0; background: none; color: var(--ink); cursor: pointer; }

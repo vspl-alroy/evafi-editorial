@@ -1,7 +1,7 @@
 # How to write the article `.md` file
 
 A worked guide based on the article `content/credit-card-minimum-payments.md`, which has since been removed from the site (see git history; the live example is now [`content/credit-card-debt-options.md`](../content/credit-card-debt-options.md)). Open that file next to this guide: every piece below is taken from it.
-For publishing (file name, GitHub, images, Spanish) see [adding-an-article.md](adding-an-article.md). This guide is only about what goes **inside** the file.
+For publishing (file name, GitHub, images) see [adding-an-article.md](adding-an-article.md). This guide is only about what goes **inside** the file.
 
 ## 1. The big picture
 
@@ -218,7 +218,6 @@ Compare fixed-rate debt consolidation offers
 - [ ] Links all start with `https://` or `#`; the consolidation link is the right one.
 - [ ] Figures, sources and dates were approved by Legal / Compliance.
 - [ ] No `**`, `[ ]`, `( )`, `:::` or `{State}` text is visible on the live page.
-- [ ] Spanish version (if any): same file name in `content/es/`, same structure; labels like "Question n of N" are added by the site.
 
 ## 9. Troubleshooting
 

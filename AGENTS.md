@@ -19,8 +19,8 @@ There is no test runner. Verify by building and looking at `public/<slug>/index.
 ## Architecture rules
 - Content format contract is defined in the comment at the top of `src/markdown.ts` and in `docs/adding-an-article.md` (written for Marketing). **If you change what the parser accepts, update both and extend the self-check at the bottom of `src/markdown.ts`.**
 - No GraphQL, no remark/MDX, no CMS. Don't add dependencies for what a few lines can do.
-- Pages: `gatsby-node.ts` → `createPages` (articles, home `/` and `/es/`, `/404.html`), `onPreBootstrap` (copies `content/` non-md files to `static/content/`), `onPostBuild` (robots.txt, sitemap.xml).
-- Languages: `src/i18n.ts` lists locales and all UI strings. A new UI string goes in **every** locale block. Spanish text written by an AI is a draft that needs native review: say so.
+- Pages: `gatsby-node.ts` → `createPages` (articles, home `/`, `/404.html`), `onPreBootstrap` (copies `content/` non-md files to `static/content/`), `onPostBuild` (robots.txt, sitemap.xml).
+- Language: English only. `src/i18n.ts` lists locales and all UI strings; a new UI string goes in **every** locale block (there is one now). Text in a language you add that was written by an AI is a draft that needs native review: say so.
 - One stylesheet for all pages (`_tokens`, `_base`, `_article`), mobile-first with the `md` mixin (720px). The design is the Figma export: don't invent a new look.
 - Article pages mirror the design file in `10.7 Credit Card Minimum Payments — Fewer Charts.html`: `_article.scss` is its CSS, the markup in `templates/article.tsx` keeps its classes (`.q > p` etc. rely on direct children). `src/tracking.ts` is its script. Compare against the file before changing either.
 - Footer links, the quiz URL (last line of each article) and dates are content, not code.

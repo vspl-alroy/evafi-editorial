@@ -126,13 +126,6 @@ After it is live, open the address and check:
 
 If something is off, edit the file on GitHub (pencil icon) and propose the change again.
 
-## Spanish version
-
-Put the translated file in `content/es/` with **exactly the same file name**: `content/es/how-to-get-out-of-debt.md` appears at `/es/how-to-get-out-of-debt/`.
-Keep the same structure: same `##` sections, same images, `{State}`, and the quiz link on the last line.
-Use the same file name or the English and Spanish pages will not be linked by the language switcher.
-A Spanish article only appears in the Spanish site if its file exists. See also [i18n.md](i18n.md).
-
 ## Before the site launches
 
 The site is still in development: it tells search engines **not** to index it. Articles added now will not appear in Google until a developer switches that on at launch.
@@ -142,7 +135,7 @@ Compliance note: articles contain savings figures, testimonials and credit-score
 
 | Problem | Likely cause |
 |---|---|
-| The article is not on the site | File is not in `content/` (or `content/es/`), name has capitals/spaces/accents, or the pull request is not merged yet. |
+| The article is not on the site | File is not in `content/`, name has capitals/spaces/accents, or the pull request is not merged yet. |
 | No button at the end | The last line is not a link, or it doesn't start with `https://`. |
 | A picture is missing | The image file wasn't uploaded to `content/images/`, or the name in the article doesn't match exactly (including capitals and `.png` vs `.jpg`). |
 | Text shows `[words](https://...)` | The link is not `https://` (or `#`), or has a space in the address. |

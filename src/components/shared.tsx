@@ -69,7 +69,7 @@ export function Inline({ text, state, tag: Tag = "strong", cta }: { text: string
   return <>{out}</>
 }
 
-// EvaFi's official advertising disclosure (Figma node 262:154), verbatim. Legal text: not translated, the Spanish page shows it in English.
+// EvaFi's official advertising disclosure (Figma node 262:154), verbatim.
 const DISCLOSURE = [
   "This website is an advertisement. It is owned and operated by Nationwide Financial Group LLC d/b/a EvaFi, and its purpose is to introduce you to EvaFi's service and to the financial partners in our network. It is not a news site, a consumer publication, or an independent review. Any articles, headlines, comparisons, or stories you see here are marketing content written or commissioned by EvaFi, not journalism, and the people described in them are not reporters or independent experts.",
   "We tell you this up front because of how EvaFi works. We shop for you across our network of financial partners and present the offers that best fit your request, and we do it at no cost to you. To keep the service free, EvaFi may be compensated by those partners when we refer you to them or when you take an offer. That compensation can influence which partners appear on this site, where they appear, and how prominently they are featured. It is also why this site is an advertisement rather than an impartial publication: we have a financial relationship with the companies we present.",
@@ -170,7 +170,7 @@ export const HeadCommon = ({ locale, alternates, seo }: { locale: Locale; altern
           <meta property="og:title" content={seo.title} />
           <meta property="og:description" content={seo.description} />
           <meta property="og:url" content={abs(seo.path)} />
-          <meta property="og:locale" content={locale === "es" ? "es_US" : "en_US"} />
+          <meta property="og:locale" content="en_US" />
           {seo.image && <meta property="og:image" content={abs(prefixed(seo.image)!)} />}
           <meta name="twitter:card" content={seo.image ? "summary_large_image" : "summary"} />
         </>

@@ -31,12 +31,12 @@ npx tsx src/markdown.ts   # self-check of the Markdown parser, prints "ok"
 
 - `content/*.md` are parsed by `src/markdown.ts` into page data. `gatsby-node.ts` reads them and creates the pages. There is no GraphQL and no remark.
 - Images live in `content/images/`. The build (`processImages` in `gatsby-node.ts`) copies everything in `content/` except `.md` files to `static/content/` (generated, git-ignored), so `images/x.png` is served at `/content/images/x.png`. For every png/jpg it also writes WebP variants (`x-480.webp`, `x-800.webp`, `x-1200.webp`, never upscaled) with `sharp`, and the templates emit `srcSet`/`sizes` so phones download the small ones. `og:image` uses the 1200px variant. New or changed images are picked up at the next build or dev-server restart.
-- Languages: English at `/<slug>/`, Spanish at `/es/<slug>/` from `content/es/<slug>.md` (same file name). UI strings per language are in `src/i18n.ts`. See [docs/i18n.md](docs/i18n.md).
+- Language: English only, at `/<slug>/`. UI strings are in `src/i18n.ts`. See [docs/i18n.md](docs/i18n.md) to add a language.
 - `{State}` placeholders are replaced in the browser from `?state=Texas` (`useStateName` in `src/components/shared.tsx`). The static HTML contains the fallback ("your state").
 - The **last line** of an article, if it is a link, becomes the main quiz button and is removed from the text. A link alone in its own block (blank lines around it) elsewhere becomes a button with its own text.
 
 ```
-content/                 articles (.md), content/es/ Spanish, content/images/
+content/                 articles (.md), content/images/
 src/markdown.ts          Markdown subset parser (+ self-check at the bottom)
 src/content.ts           page data types
 src/i18n.ts              locales and UI strings

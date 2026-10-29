@@ -1,7 +1,7 @@
 // Locales and UI strings. Article text comes from content/<locale>/<slug>.md, everything else from here.
 // Add a language: add the code to `locales` and a block to `ui`, then put articles in content/<code>/.
 
-export const locales = ["en", "es"] as const
+export const locales = ["en"] as const
 export type Locale = (typeof locales)[number]
 export const defaultLocale: Locale = "en"
 
@@ -85,48 +85,5 @@ export const ui: Record<Locale, UI> = {
     cta: "Take EvaFi's Free Quiz",
     defaultDate: "September 30, 2026",
     defaultState: "your state",
-  },
-  // TODO: have a native speaker review these UI strings.
-  es: {
-    name: "Español",
-    brand: "Debt Advice 101",
-    statsLabel: "En cifras",
-    stats: [
-      { k: "Deuda total de tarjetas en EE. UU.", v: "$1.252 billones", src: "Fed de NY, 1T 2026" },
-      { k: "Saldo promedio por titular", v: "$7,886", src: "LendingTree, 3T 2025" },
-      { k: "APR promedio, saldos con intereses", v: "22.15%", src: "Reserva Federal, 2T 2026" },
-      { k: "Saldos con más de 30 días de atraso", v: "2.92%", src: "Fed de NY, 1T 2026" },
-    ],
-    ad: "Publicidad",
-    discLink: "Divulgación para anunciantes", // AI draft, needs native review
-    discClose: "Cerrar",
-    readTime: "{n} min de lectura",
-    part: "Pregunta {i} de {n}",
-    toc: "En este explicativo",
-    nextStep: "Siguiente paso",
-    statement: ["ESTADO DE CUENTA", "Cuenta terminada en ••••", "Saldo nuevo", "Pago mínimo a pagar", "APR de compras", "Aviso de pago atrasado:", "Si no recibimos su pago mínimo antes de la fecha indicada arriba, es posible que deba pagar un cargo por mora y que sus APR aumenten.", "Aviso de pago mínimo", "Si realiza solo el pago mínimo cada período, pagará más intereses y tardará más en pagar su saldo.", "Si no hace cargos adicionales con esta tarjeta y cada mes paga…", "Pagará el saldo que aparece en este estado de cuenta en aproximadamente…", "Y terminará pagando un total estimado de…"],
-    disclosure: "Este artículo es contenido publicitario pagado de Debt Advice 101, un servicio que conecta a las personas con opciones de consolidación de deudas a través de sus socios financieros. El Debt Consolidation Check es operado por Debt Advice 101. Este contenido es solo informativo y no constituye asesoría financiera, legal ni fiscal. Las tasas, los términos y la elegibilidad varían.",
-    footerLinks: [
-      { label: "Acerca de", slug: "about" },
-      { label: "Divulgación publicitaria", slug: "advertising-disclosure" },
-      { label: "Política de privacidad", slug: "privacy-policy" }, // page text is English only for now
-      { label: "Términos", slug: "terms" },
-      { label: "Política de privacidad de California", slug: "california-policy" }, // page text is English only for now
-      { label: "No vender ni compartir", slug: "do-not-sell-or-share" },
-      { label: "Consentimiento electrónico", slug: "esign-consent" }, // page text is English only for now
-    ],
-    author: "Autor",
-    authorName: "Equipo editorial de EvaFi",
-    updated: "Actualizado",
-    updatedValue: "Esta semana",
-    description: "Noticias y guías sobre la deuda de tarjetas de crédito y las opciones para salir de ella.",
-    news: "Noticias financieras de hoy",
-    notFound: "Página no encontrada",
-    notFoundText: "No pudimos encontrar la página que buscabas. Puede que se haya movido o que el enlace sea incorrecto.",
-    readThese: "Artículos que puedes leer",
-    goHome: "Volver a la página de inicio",
-    cta: "Haz el cuestionario gratuito de EvaFi",
-    defaultDate: "30 de septiembre de 2026",
-    defaultState: "tu estado",
   },
 }
