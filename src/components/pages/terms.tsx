@@ -2,13 +2,7 @@ import * as React from "react"
 import type { PageView } from "."
 import { LegalPage, Section } from "../legal-page"
 
-// /terms/ (footer "Terms"). Copied from EvaFi src/ui/landing/Terms.tsx (origin/main 281f599). Keep the wording 1:1;
-// only these are swapped (EVA-354): the name EvaFi (also in "Nationwide Financial Group LLC d/b/a …"), the site
-// www.evafi.com, the email info@evafi.com and the phone; EvaFi's vanity number "(877) EVA-FI22" is dropped.
-// Layout and styles: LegalPage (Debt Advice 101 design system); header, footer and <head> come from templates/page.tsx.
 // TODO: placeholder until Debt Advice 101 has its own number (EVA-328). Replace before launch.
-// TODO: Tori to confirm "Chat with Eva" (section 17), the Utah venue (6, 9), the SMS program (10) and the
-// Advertiser Disclosure (19) apply to Debt Advice 101.
 const PHONE = "(877) 382-3422"
 const EMAIL = "privacy@debtadvice101.com"
 const Email = () => <a className="el-plain" href={`mailto:${EMAIL}`}>{EMAIL}</a>
