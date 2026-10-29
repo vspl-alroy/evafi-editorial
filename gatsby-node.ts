@@ -2,7 +2,7 @@ import fs from "fs"
 import path from "path"
 import sharp from "sharp"
 import type { GatsbyNode } from "gatsby"
-import { parseArticle } from "./src/markdown"
+import { expandVariants, parseArticle } from "./src/markdown"
 import { SITE_URL, defaultLocale, localePath, locales } from "./src/i18n"
 import type { Alternate, Locale } from "./src/i18n"
 import { excerpt } from "./src/content"
@@ -24,7 +24,7 @@ function markdownVariants(locale: Locale): Variant[] {
     const v = /^[a-z0-9-]+$/.test(slug) ? parseArticle(slug, md) : null
     if (!v) console.warn(`[content] skipped ${label}: ${/^[a-z0-9-]+$/.test(slug) ? 'first line must be "# Title"' : "filename may only use letters, digits and hyphens"}`)
     if (!v) return []
-    return [{ ...v, locale, hero: v.hero && withVariants(v.hero), intro: v.intro.map(enrich), sections: v.sections.map(s => ({ ...s, body: s.body.map(enrich) })) }]
+    return expandVariants(v).map(x => ({ ...x, locale, hero: x.hero && withVariants(x.hero), intro: x.intro.map(enrich), sections: x.sections.map(s => ({ ...s, body: s.body.map(enrich) })) }))
   })
 }
 
@@ -102,7 +102,7 @@ export const createPages: GatsbyNode["createPages"] = ({ actions }) => {
   actions.createPage({
     path: "/404.html",
     component: path.resolve("src/templates/not-found.tsx"),
-    context: { byLocale: Object.fromEntries(locales.map(l => [l, byLocale.get(l)!.map(teaser)])) },
+    context: { byLocale: Object.fromEntries(locales.map(l => [l, byLocale.get(l)!.filter(v => !v.unlisted).map(teaser)])) },
   })
 
   for (const locale of locales) {
@@ -111,7 +111,7 @@ export const createPages: GatsbyNode["createPages"] = ({ actions }) => {
       actions.createPage({
         path: localePath(locale),
         component: path.resolve("src/templates/index.tsx"),
-        context: { articles: articles.map(teaser), locale, alternates: alternatesFor() },
+        context: { articles: articles.filter(v => !v.unlisted).map(teaser), locale, alternates: alternatesFor() },
       })
     }
     articles.forEach(variant => {
@@ -137,7 +137,7 @@ export const onPostBuild: GatsbyNode["onPostBuild"] = () => {
   for (const locale of locales) {
     const articles = markdownVariants(locale)
     if (locale === defaultLocale || articles.length) slugs.set("", [...(slugs.get("") ?? []), locale])
-    for (const v of articles) slugs.set(v.slug, [...(slugs.get(v.slug) ?? []), locale])
+    for (const v of articles.filter(v => !v.unlisted)) slugs.set(v.slug, [...(slugs.get(v.slug) ?? []), locale])
   }
   const urls = [...slugs].map(([slug, ls]) => {
     const alts = ls.length > 1 ? ls.map(l => `<xhtml:link rel="alternate" hreflang="${l}" href="${SITE_URL}${PREFIX}${localePath(l, slug)}"/>`).join("") : ""

@@ -1,7 +1,7 @@
 // Page analytics from the design: dataLayer events (page view, scroll depth, time, section views, clicks),
 // the reading-progress bar and the contents highlight. Call once after the article is on screen.
-// Links with data-cta get ?src=&sid=&cta= plus the visitor's utm_/click-id params and a click event.
-const PASS_THROUGH = /^(utm_|gclid$|gbraid$|wbraid$|fbclid$|ttclid$|msclkid$|li_fat_id$)/
+// Links with data-cta get ?src=&sid=&cta= (&a= for quiz answers) plus the visitor's utm_/comet_/click-id params and a click event.
+const PASS_THROUGH = /^(utm_|comet_|gclid$|gbraid$|wbraid$|fbclid$|ttclid$|msclkid$|li_fat_id$)/
 
 export function startTracking(page: string): () => void {
   const w = window as unknown as { dataLayer?: Record<string, unknown>[] }
@@ -26,6 +26,7 @@ export function startTracking(page: string): () => void {
       const u = new URL(a.getAttribute("href")!, location.href)
       new URLSearchParams(location.search).forEach((v, k) => { if (PASS_THROUGH.test(k)) u.searchParams.set(k, v) })
       u.searchParams.set("src", page); u.searchParams.set("sid", sid); u.searchParams.set("cta", cta)
+      const ans = a.getAttribute("data-a"); if (ans) u.searchParams.set("a", ans)
       a.href = u.toString()
     } catch {}
     a.target = "_blank"; a.rel = "noopener"

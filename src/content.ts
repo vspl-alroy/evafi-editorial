@@ -13,7 +13,10 @@ export type Box =
   | { box: "takeaways"; h: string; items: string[] }
   | { box: "stat"; num: string; of: string; cap: string }
   | { box: "statement"; alt: string; balance: string; minimum: string; apr: string; rows: string[][]; caption: string }
-  | { box: "tip"; h: string; text: string }
+  | { box: "tip"; h: string; text: string; items: string[]; src: string }
+  | { box: "split"; h: string; sub: string; bars: { h: string; w: number }[]; callout: string; note: string }
+  | { box: "quiz"; k: string; meta: string; h: string; lead: string; items: { h: string; a: string }[]; href: string; button: string; check: string; how: string }
+  | { box: "link"; cta: string; text: string }
   | { box: "ways"; items: string[] }
   | { box: "check"; h: string; p: string; steps: { h: string; text: string; flag: boolean }[]; cta: string }
   | Cta
@@ -43,6 +46,11 @@ export interface Variant {
   tracking?: string // "Tracking:" page id for analytics events, default = slug
   outro?: Box[] // boxes that close the article (check, next, soft, related, method), in file order
   rail?: Cta // side-rail call to action
+  stats?: { k: string; v: string; src: string }[] // "Stats:" line, replaces the numbers strip of this page
+  alt?: { titles: string[]; heroes: Img[] } // "Alt headlines:" / "Alt heroes:" lines, see expandVariants
+  partLabels?: boolean // "Part labels: off" hides the "Question 1 of 4" label above each section
+  unlisted?: boolean // ad landing page: not on the home page, not in the sitemap
+  canonical?: string // slug of the page search engines should treat as the original
   cta?: { href: string; label?: string } // quiz link, from the last line of the markdown file
   intro: BodyItem[]
   sections: Section[]

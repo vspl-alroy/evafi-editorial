@@ -42,6 +42,9 @@ Things that do **not** work (they show up exactly as typed): italics, headings s
 | `Byline: 6 min read \| Data: Fed, NY Fed · [Sources](#sources)` | The line under the standfirst, parts split by ` \| ` |
 | `Description: ...` | Text Google shows under the title (default: first paragraph) |
 | `Tracking: da101_credit_cards` | Name used in analytics events (default: the file name) |
+| `Stats: label \| value \| source ;; label \| value \| source` | Replaces the "By the numbers" strip for this article only |
+| `Part labels: off` | Hides the "Question 1 of 4" label above each section |
+| `Alt headlines:` / `Alt heroes:` | One file, several landing pages: see "Headline and photo variants" |
 
 The **first paragraph** after the top image is the large standfirst under the headline.
 A caption under an image: put it on the line right below the image line, `Caption text | Credit`.
@@ -55,7 +58,10 @@ A box starts with `::: name` and ends with a line containing only `:::`. See `co
 | `::: takeaways The short version` + `- ` lines | Grey summary box (put it before the first `##`) |
 | `::: stat` | First line `$146 \| of your $224 minimum`, next line the caption |
 | `::: statement` | The card-statement illustration (`Alt:`, `Balance:`, `Minimum:`, `APR:`, `Caption:`, rows `- a \| **b** \| c`) |
-| `::: tip Worth checking` | Grey tip box with a link |
+| `::: tip Worth checking` | Grey tip box with a link. Or `- ` lines and a `Source: ...` line for a list |
+| `::: split Title` | Two-part bar: subtitle line, two `- **$369** Interest \| 369` lines (the number after `\|` sets the bar width), `Callout: You pay $569. \| But only $200 ...`, `Note: ...` |
+| `::: quiz Start here` | Answer buttons: `Free \| ...` line, question line, `- Under $5,000 \| under-5k` lines, `Link: https://...`, `Check: ...`. With a `[Button text](https://...)` line instead of the `- ` lines it is a button box (title, pitch, button, `How it works: ...`) |
+| `::: link name` | A tracked link line in the middle of the text (`name` shows up in analytics). `check`, `next`... still move to the end, this one does not |
 | `::: ways` + `- **Lead.** text` lines | List of options |
 | `::: check Title` | The 3-step check: intro line, `- Title \| text` lines (`- ! Title` shows it in red), last line the link |
 | `::: next Next step` | Dark call-to-action: headline, description, `[Button text](https://...)` |
@@ -65,6 +71,15 @@ A box starts with `::: name` and ends with a line containing only `:::`. See `co
 
 `check`, `next`, `soft`, `related`, `method` and `rail` always appear after the last section, in the order written.
 Links inside `tip`, `ways`, `check`, `next`, `soft` and `rail` are tracked as calls to action.
+
+### Headline and photo variants
+
+For ads that test headlines and photos: write the article once. The `# headline` and the top image are variant **1a**.
+Add `Alt headlines: second headline || third headline` and `Alt heroes: images/b.jpg | alt text || images/c.jpg | alt text`.
+Every headline x photo pair becomes its own page, `/<file-name>-1a/`, `-1b`, `-1c`, `-2a`... (number = headline, letter = photo). Everything else is identical, and the caption of the top image is reused.
+These pages are not listed on the home page or in the sitemap, and point search engines to `-1a`.
+The ad link is the page plus the UTM: `https://<site>/adv-23-2b/?comet_source=taboola&comet_campaign_id={campaign_id}&comet_ad_id={site_id}&utm_content=GCO23T2b`.
+`comet_*` and `utm_*` are passed on to every button on the page.
 
 ### The main quiz button
 

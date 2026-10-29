@@ -70,7 +70,43 @@ const BoxView = ({ b, state, t }: { b: Box; state: string; t: (typeof ui)["en"] 
       )
     }
     case "tip":
-      return <div className="tip"><h3>{b.h}</h3><p><Inline text={b.text} state={state} cta="tip_compare" /></p></div>
+      return (
+        <div className="tip">
+          <h3>{b.h}</h3>
+          {b.text && <p><Inline text={b.text} state={state} cta="tip_compare" /></p>}
+          {b.items.length > 0 && <ul>{b.items.map(i => <li key={i}><Inline text={i} state={state} /></li>)}</ul>}
+          {b.src && <p className="src">{b.src.startsWith("Source") ? b.src : `Source: ${b.src}`}</p>}
+        </div>
+      )
+    case "split": {
+      const [strong, rest] = b.callout.split(/\s+\|\s+/)
+      return (
+        <figure className="fig">
+          <p className="fig-t">{b.h}</p>
+          {b.sub && <p className="fig-s">{b.sub}</p>}
+          <div className="split-bar" aria-hidden="true">{b.bars.map((x, i) => <div key={i} className={i ? "p" : "i"} style={{ flex: x.w }} />)}</div>
+          <div className="legend2">{b.bars.map((x, i) => <div key={i}><i className={i ? "sw way" : "sw trap"} /><span><Inline text={x.h} state={state} tag="b" /></span></div>)}</div>
+          {strong && <p className="fig-callout trap"><b>{strong}</b>{rest && <span>{rest}</span>}</p>}
+          {b.note && <p className="fig-note">{b.note}</p>}
+        </figure>
+      )
+    }
+    case "quiz": {
+      const options = b.items.length > 0
+      return (
+        <section className="mpc" data-section={options ? "quiz_picker" : "quiz_button"}>
+          <div className="mpc-top"><span className="k">{b.k}</span>{b.meta && <span className="meta">{b.meta}</span>}</div>
+          {options ? <p className="mpc-q">{b.h}</p> : <p className="mpc-h">{b.h}</p>}
+          {!options && b.lead && <p className="mpc-lead">{b.lead}</p>}
+          {options && <div className="mpc-opts">{b.items.map((o, i) => <a key={o.a} className={b.items.length % 2 && i === b.items.length - 1 ? "mpc-opt wide" : "mpc-opt"} href={b.href} data-cta="balance" data-a={o.a}>{o.h}</a>)}</div>}
+          {!options && b.button && <div className="btn-row"><a className="btn" href={b.href} data-cta="options_box">{b.button}</a></div>}
+          {b.check && <ul className="mpc-checks"><li><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.3 6.5 11l6-6.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>{b.check}</li></ul>}
+          {b.how && <p className="mpc-how"><b>How it works:</b> {b.how}</p>}
+        </section>
+      )
+    }
+    case "link":
+      return <p className="soft link-line"><Inline text={b.text} state={state} cta={b.cta} /></p>
     case "ways":
       return <ul className="ways">{b.items.map(i => <li key={i}><Inline text={i} state={state} tag="b" cta="ways_option" /></li>)}</ul>
     case "check":
@@ -93,7 +129,7 @@ const BoxView = ({ b, state, t }: { b: Box; state: string; t: (typeof ui)["en"] 
       return (
         <section className="method" id="sources" aria-labelledby="src-h">
           <h2 id="src-h">{b.h}</h2>
-          <p><Inline text={b.text} state={state} /></p>
+          {b.text && <p><Inline text={b.text} state={state} /></p>}
           <ol>{b.items.map(i => <li key={i}><Inline text={i} state={state} /></li>)}</ol>
         </section>
       )
@@ -104,11 +140,14 @@ const BoxView = ({ b, state, t }: { b: Box; state: string; t: (typeof ui)["en"] 
 const Next = ({ b, state, cta }: { b: Cta; state: string; cta?: string }) => {
   const go = b.go && <>{fillState(b.go, state)} </>
   return b.box === "rail" ? (
-    <a className="rail-next" href={b.href} data-cta={cta}>
-      <p className="k">{b.k}</p>
-      <p className="h">{fillState(b.h, state)}</p>
-      <span className="go">{b.go ? fillState(b.go, state) : "→"}</span>
-    </a>
+    <>
+      <a className="rail-next" href={b.href} data-cta={cta}>
+        <p className="k">{b.k}</p>
+        <p className="h">{fillState(b.h, state)}</p>
+        <span className="go">{b.go ? fillState(b.go, state) : "→"}</span>
+      </a>
+      {b.d && <p className="rail-fine">{fillState(b.d, state)}</p>}
+    </>
   ) : (
     <a className="next" id="next-cta" href={b.href} data-cta={cta}>
       <p className="k">{b.k}</p>
@@ -126,7 +165,7 @@ const Figure = ({ img, section, hero, sizes }: { img: Img; section: string; hero
   </figure>
 )
 
-export default function Article({ pageContext: { slug, title, date, kicker, byline, tracking, hero: heroOverride, intro, sections, outro = [], rail, cta, locale = defaultLocale, alternates = [] } }: PageProps<object, Variant>) {
+export default function Article({ pageContext: { slug, title, date, kicker, byline, tracking, stats, partLabels, hero: heroOverride, intro, sections, outro = [], rail, cta, locale = defaultLocale, alternates = [] } }: PageProps<object, Variant>) {
   const state = useStateName(locale)
   const t = ui[locale]
   React.useEffect(() => startTracking(tracking ?? slug.replace(/-/g, "_")), [tracking, slug])
@@ -168,7 +207,7 @@ export default function Article({ pageContext: { slug, title, date, kicker, byli
   return (
     <div>
       <div className="progress" aria-hidden="true"><div id="prog" /></div>
-      <Header locale={locale} alternates={alternates} />
+      <Header locale={locale} alternates={alternates} stats={stats} />
 
       <main className="frame gutter">
         <div className="head">
@@ -187,7 +226,7 @@ export default function Article({ pageContext: { slug, title, date, kicker, byli
             {sections.length > 1 && toc("toc toc-inline")}
             {sections.map((sec, i) => (
               <section key={sec.h} className="q" id={`q${i + 1}`} data-section={`q${i + 1}`}>
-                <span className="q-num">{fill(t.part, { i: i + 1, n: sections.length })}</span>
+                {partLabels !== false && <span className="q-num">{fill(t.part, { i: i + 1, n: sections.length })}</span>}
                 <h2>{sec.h}</h2>
                 <Items items={sec.body} />
                 {sec.steps && <ol>{sec.steps.map(s => <li key={s}>{s}</li>)}</ol>}
@@ -221,7 +260,7 @@ export const Head = ({ pageContext, location }: HeadProps<object, Variant>) => {
       <HeadCommon
         locale={locale}
         alternates={pageContext.alternates ?? []}
-        seo={{ title, description: pageContext.description ?? fill(excerpt(pageContext.intro, 155)), path: location.pathname, image: pageContext.hero?.share ?? pageContext.hero?.img ?? hero, type: "article" }}
+        seo={{ title, description: pageContext.description ?? fill(excerpt(pageContext.intro, 155)), path: pageContext.canonical ? location.pathname.replace(pageContext.slug, pageContext.canonical) : location.pathname, image: pageContext.hero?.share ?? pageContext.hero?.img ?? hero, type: "article" }}
       />
     </>
   )

@@ -2,7 +2,7 @@ import * as React from "react"
 import { Link, withPrefix } from "gatsby"
 import { SITE_URL, defaultLocale, localePath, locales, ui } from "../i18n"
 import type { Alternate, Locale } from "../i18n"
-import type { Teaser } from "../content"
+import type { Teaser, Variant } from "../content"
 import hero from "../images/hero.png"
 
 export const fillState = (s: string, state: string) => s.replaceAll("{State}", state)
@@ -48,7 +48,7 @@ export function Inline({ text, state, tag: Tag = "strong", cta }: { text: string
   return <>{out}</>
 }
 
-export const Header = ({ locale }: { locale: Locale; alternates?: Alternate[] }) => { // no language switcher for now
+export const Header = ({ locale, stats }: { locale: Locale; alternates?: Alternate[]; stats?: Variant["stats"] }) => { // no language switcher for now
   const t = ui[locale]
   return (
     <>
@@ -59,7 +59,7 @@ export const Header = ({ locale }: { locale: Locale; alternates?: Alternate[] })
         <div className="frame gutter">
           <div className="rates-inner">
             <span className="rates-label">{t.statsLabel}</span>
-            {t.stats.map(s => <span key={s.k} className="rate"><span className="k">{s.k}</span><b>{s.v}</b><span className="src">{s.src}</span></span>)}
+            {(stats ?? t.stats).map(s => <span key={s.k} className="rate"><span className="k">{s.k}</span><b>{s.v}</b><span className="src">{s.src}</span></span>)}
           </div>
         </div>
       </div>

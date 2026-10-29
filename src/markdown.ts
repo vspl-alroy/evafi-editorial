@@ -7,10 +7,15 @@ import type { BodyItem, Box, Cta, Btn, Img, Section, Variant } from "./content"
 // Quiz link: the LAST line of the file, alone: "@quiz-link:https://..." (http/https only).
 //   It becomes the CTA button (and is removed from the text). No line = no button.
 // Optional header lines under the title: Date, Kicker, Byline (parts split by " | "), Description, Tracking.
+//   Stats: label | value | source ;; label | value | source   replaces the "By the numbers" strip on this page.
+//   Part labels: off                                           hides "Question 1 of 4" above each section.
+//   Alt headlines: second headline || third headline          } together with the # title and the top image
+//   Alt heroes: images/b.jpg | alt text || images/c.jpg | alt  } they expand into one page per pair, see expandVariants.
 // Inline text may use **bold** and [links](https://... or #anchor); they render in the template, the parser keeps raw text.
 // An image block may carry a caption on the next line: "Caption text | Credit".
 // Boxes: "::: name optional heading" ... ":::" (see docs/adding-an-article.md): takeaways, stat, statement, tip, ways,
 //   check, next, rail, soft, related, method. check/next/soft/related/method close the article, rail is the side CTA.
+//   Also split (two-part bar + legend), quiz (question with answer buttons, or a button), link (tracked line mid-article).
 export function parseArticle(slug: string, md: string): Variant | null {
   // <!-- ... --> lines are comments, not content
   let text = md.replace(/\r\n/g, "\n").replace(/^<!--.*-->[ \t]*$/gm, "").trimEnd()
@@ -54,14 +59,26 @@ export function parseArticle(slug: string, md: string): Variant | null {
     const [, name, arg, inner] = m
     const ls = lines(inner).filter(Boolean)
     const items = ls.filter(l => l.startsWith("- ")).map(l => l.slice(2))
-    const para = ls.filter(l => !l.startsWith("- "))
+    const para = ls.filter(l => !l.startsWith("- ") && !/^(Callout|Note|Link|Check|How it works|Source):/i.test(l))
     const kv = (k: string) => ls.find(l => l.toLowerCase().startsWith(k.toLowerCase() + ":"))?.slice(k.length + 1).trim() ?? ""
     const link = para.join(" ").match(/\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/)
     switch (name) {
       case "takeaways": return { box: "takeaways", h: arg, items }
       case "stat": { const [num, of] = (para[0] ?? "").split(/\s+\|\s+/); return { box: "stat", num, of: of ?? "", cap: para.slice(1).join(" ") } }
       case "statement": return { box: "statement", alt: kv("Alt"), balance: kv("Balance"), minimum: kv("Minimum"), apr: kv("APR"), caption: kv("Caption"), rows: items.map(r => r.split(/\s+\|\s+/)) }
-      case "tip": return { box: "tip", h: arg, text: para.join(" ") }
+      case "tip": return { box: "tip", h: arg, text: para.join(" "), items, src: kv("Source") }
+      case "split": {
+        const bars = items.map(i => { const [h, w] = i.split(/\s+\|\s+/); return { h, w: Number(w) || 1 } })
+        return { box: "split", h: arg, sub: para[0] ?? "", bars, callout: kv("Callout"), note: kv("Note") }
+      }
+      case "quiz": {
+        const btn = para.map(l => l.match(/^\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)$/)).find(Boolean)
+        const text = para.filter(l => !/^\[[^\]]+\]\(https?:/.test(l))
+        const options = items.map(i => { const [h, a] = i.split(/\s+\|\s+/); return { h, a: a ?? "" } })
+        const href = btn?.[2] ?? kv("Link")
+        return { box: "quiz", k: arg, meta: text[0] ?? "", h: text[1] ?? "", lead: text[2] ?? "", items: options, href: /^https?:\/\//.test(href) ? href : "", button: btn?.[1].trim() ?? "", check: kv("Check"), how: kv("How it works") }
+      }
+      case "link": return { box: "link", cta: arg, text: para.join(" ") }
       case "ways": return { box: "ways", items }
       case "check": {
         const steps = items.map(i => { const [h, ...t] = i.replace(/^!\s*/, "").split(/\s+\|\s+/); return { h, text: t.join(" | "), flag: i.startsWith("!") } })
@@ -110,14 +127,32 @@ export function parseArticle(slug: string, md: string): Variant | null {
   const byline = field("Byline")?.split(/\s+\|\s+/)
   const description = field("Description")
   const tracking = field("Tracking")
-  const intro = body(head.replace(/^# .+$/m, "").replace(/^(Date|Kicker|Byline|Description|Tracking):.*$/gim, "")).body
+  const stats = field("Stats")?.split(/\s+;;\s+/).map(s => { const [k, v, src] = s.split(/\s+\|\s+/); return { k, v, src: src ?? "" } })
+  const partLabels = field("Part labels")?.toLowerCase() === "off" ? false : undefined
+  const titles = field("Alt headlines")?.split(/\s+\|\|\s+/) ?? []
+  const heroes = (field("Alt heroes")?.split(/\s+\|\|\s+/) ?? []).map(s => { const [src, alt] = s.split(/\s+\|\s+/); return { img: "/content/" + encodeURI(src.trim().replace(/^\.?\//, "")), alt: alt ?? "" } })
+  const intro = body(head.replace(/^# .+$/m, "").replace(/^(Date|Kicker|Byline|Description|Tracking|Stats|Part labels|Alt headlines|Alt heroes):.*$/gim, "")).body
   outro.unshift(...introBoxes(intro))
   for (let i = intro.length - 1; i >= 0; i--) if (isClosing(intro[i])) intro.splice(i, 1)
   const ri = outro.findIndex(i => i.box === "rail")
   const rail = ri >= 0 ? (outro.splice(ri, 1)[0] as Cta) : undefined
   const first = intro[0]
   const hero = first && typeof first === "object" && "img" in first ? (intro.shift() as Img) : undefined
-  return { slug, label: slug, date, kicker, byline, description, tracking, cta, title, hero, intro, sections, outro: outro.length ? outro : undefined, rail }
+  const alt = titles.length || heroes.length ? { titles, heroes } : undefined
+  return { slug, label: slug, date, kicker, byline, description, tracking, stats, partLabels, alt, cta, title, hero, intro, sections, outro: outro.length ? outro : undefined, rail }
+}
+
+// A page with "Alt headlines:" and/or "Alt heroes:" becomes one page per headline x hero, identical except those two:
+// /<slug>-1a/ = # title + top image, -1b = second image, -2a = second headline + top image, ... Without alternates: the page itself.
+export function expandVariants(v: Variant): Variant[] {
+  if (!v.alt) return [v]
+  const titles = [v.title, ...v.alt.titles]
+  const heroes = [v.hero, ...v.alt.heroes.map(h => ({ ...h, caption: v.hero?.caption, credit: v.hero?.credit }))]
+  const base = `${v.slug}-1a`
+  return titles.flatMap((title, i) => heroes.map((hero, j) => {
+    const slug = `${v.slug}-${i + 1}${String.fromCharCode(97 + j)}`
+    return { ...v, alt: undefined, slug, label: slug, title, hero, unlisted: true, canonical: base }
+  }))
 }
 
 if (process.argv[1]?.endsWith("markdown.ts")) {
@@ -151,6 +186,20 @@ if (process.argv[1]?.endsWith("markdown.ts")) {
   const ck = bx.outro![0] as Extract<Box, { box: "check" }>
   console.assert(ck.steps.length === 2 && ck.steps[1].flag && ck.cta === "If [x](https://a.com)", "check box")
   console.assert((bx.outro![1] as Cta).d === "Desc", "next box")
+  const vs = expandVariants(parseArticle("adv", "# H1\n\nAlt headlines: H2\nAlt heroes: images/b.png | Bee || images/c.png | Sea\n\n![Ay](images/a.png)\nCap | Credit\n\ndek\n\n## S\n\ntext\n")!)
+  console.assert(vs.map(x => x.slug).join() === "adv-1a,adv-1b,adv-1c,adv-2a,adv-2b,adv-2c", "variant slugs")
+  console.assert(vs[4].title === "H2" && vs[4].hero?.img === "/content/images/b.png" && vs[4].hero.caption === "Cap" && vs[3].hero?.alt === "Ay", "variant pairing")
+  console.assert(vs.every(x => x.unlisted && x.canonical === "adv-1a" && x.intro.length === 1 && x.sections[0].body[0] === "text"), "variant body shared, header lines not in text")
+  console.assert(expandVariants(parseArticle("x", "# T\n")!).length === 1, "no alternates, one page")
+  const nb = parseArticle("x", "# T\n\nStats: A | 1 | s1 ;; B | 2 | s2\n\n## S\n\n::: split Title\nSub\n- **$3** Int | 3\n- **$2** Bal | 2\nCallout: Pay $5. | Only $2.\nNote: n\n:::\n\n::: quiz Start\nFree\nHow much?\n- Under $5k | under-5k\nLink: https://a.com/c\nCheck: tap\n:::\n\n::: quiz Opts\nFree\nNot sure?\nPitch\n[Go](https://a.com/d)\nHow it works: x\n:::\n\n::: tip Good\n- one\nSource: CFPB\n:::\n\n::: link intro_link\nHi [Go](https://a.com/e)\n:::\n")!
+  console.assert(parseArticle("x", "# T\n\nPart labels: off\n")!.partLabels === false && nb.partLabels === undefined, "part labels")
+  console.assert(nb.stats?.length === 2 && nb.stats[1].v === "2", "stats line")
+  const [sp, qz, qb, tp, ln] = nb.sections[0].body as Box[]
+  console.assert(JSON.stringify(sp) === '{"box":"split","h":"Title","sub":"Sub","bars":[{"h":"**$3** Int","w":3},{"h":"**$2** Bal","w":2}],"callout":"Pay $5. | Only $2.","note":"n"}', "split box")
+  console.assert(qz.box === "quiz" && qz.items[0].a === "under-5k" && qz.href === "https://a.com/c" && qz.h === "How much?" && qz.check === "tap", "quiz options")
+  console.assert(qb.box === "quiz" && qb.button === "Go" && qb.href === "https://a.com/d" && qb.lead === "Pitch" && qb.how === "x" && qb.items.length === 0, "quiz button")
+  console.assert(tp.box === "tip" && tp.items[0] === "one" && tp.src === "CFPB" && tp.text === "", "tip list")
+  console.assert(ln.box === "link" && ln.cta === "intro_link" && ln.text === "Hi [Go](https://a.com/e)", "link box")
   console.assert(parseArticle("x", "no title") === null)
   console.log("ok")
 }
