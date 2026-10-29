@@ -78,7 +78,7 @@ For ads that test headlines and photos: write the article once. The `# headline`
 Add `Alt headlines: second headline || third headline` and `Alt heroes: images/b.jpg | alt text || images/c.jpg | alt text`.
 Every headline x photo pair becomes its own page, `/<file-name>-1a/`, `-1b`, `-1c`, `-2a`... (number = headline, letter = photo). Everything else is identical, and the caption of the top image is reused.
 These pages are not listed on the home page or in the sitemap, and point search engines to `-1a`.
-The ad link is the page plus the UTM: `https://<site>/adv-23-2b/?comet_source=taboola&comet_campaign_id={campaign_id}&comet_ad_id={site_id}&utm_content=GCO23T2b`.
+The ad link is the page plus the UTM: `https://<site>/credit-card-debt-options-2b/?comet_source=taboola&comet_campaign_id={campaign_id}&comet_ad_id={site_id}&utm_content=GCO23T2b`.
 `comet_*` and `utm_*` are passed on to every button on the page.
 
 ### The main quiz button
