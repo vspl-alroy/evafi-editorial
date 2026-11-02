@@ -1,11 +1,10 @@
-# {State} Residents With $20k+ in Credit Card Debt: What You Need to Know
+# The Minimum Payment Mistake Many {State} Residents Make
 
 Kicker: Sponsored content · Credit card debt
 Byline: Written by the Debt Advice 101 Editorial Team | Updated: This Week | 3 min read | [Sources](#sources)
 Tracking: da101_adv_23
 Part labels: off
 Stats: U.S. credit card debt | $1.26T | NY Fed, Q2 2026 ;; Avg. APR, accruing balances | 22.15% | Federal Reserve, Q2 2026 ;; Avg. card debt per borrower | $6,610 | TransUnion, Q2 2026
-Alt headlines: Carrying $10,000+ in Card Debt? What {State} Residents Can Do
 Alt heroes: images/adv-23-hero-b.jpg | A hand holds a pink sticky note that reads: Goodbye credit card debt, in a bright kitchen. || images/adv-23-hero-c.jpg | A person highlights Minimum Payment on a credit card statement, next to a calculator and a cup of coffee.
 
 ![A person at a kitchen table reviews a stack of credit card statements next to a laptop.](images/adv-23-hero-a.jpg)

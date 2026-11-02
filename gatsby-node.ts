@@ -24,7 +24,7 @@ function markdownVariants(locale: Locale): Variant[] {
     const v = /^[a-z0-9-]+$/.test(slug) ? parseArticle(slug, md) : null
     if (!v) console.warn(`[content] skipped ${label}: ${/^[a-z0-9-]+$/.test(slug) ? 'first line must be "# Title"' : "filename may only use letters, digits and hyphens"}`)
     if (!v) return []
-    return expandVariants(v).map(x => ({ ...x, locale, hero: x.hero && withVariants(x.hero), intro: x.intro.map(enrich), sections: x.sections.map(s => ({ ...s, body: s.body.map(enrich) })) }))
+    return expandVariants(v).map(x => ({ ...x, locale, hero: x.hero && withVariants(x.hero), variants: x.variants?.map(k => ({ ...k, hero: k.hero && withVariants(k.hero) })), intro: x.intro.map(enrich), sections: x.sections.map(s => ({ ...s, body: s.body.map(enrich) })) }))
   })
 }
 

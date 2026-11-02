@@ -165,9 +165,15 @@ const Figure = ({ img, section, hero, sizes }: { img: Img; section: string; hero
   </figure>
 )
 
-export default function Article({ pageContext: { slug, title, date, kicker, byline, tracking, stats, partLabels, hero: heroOverride, intro, sections, outro = [], rail, cta, locale = defaultLocale, alternates = [] } }: PageProps<object, Variant>) {
+export default function Article({ pageContext: { slug, title: baseTitle, date, kicker, byline, tracking, stats, partLabels, hero: baseHero, variants, intro, sections, outro = [], rail, cta, locale = defaultLocale, alternates = [] } }: PageProps<object, Variant>) {
   const state = useStateName(locale)
   const t = ui[locale]
+  // ?utm_content=GCO23T2b -> the variant whose key the value ends with (b: photo b, or 2b: headline 2 + photo b); anything else shows the first. ponytail: picked after load, so a 2b click sees 1a for a moment (the static HTML can't read the query).
+  const [utm, setUtm] = React.useState("")
+  React.useEffect(() => setUtm((new URLSearchParams(location.search).get("utm_content") ?? "").toLowerCase()), [])
+  const pick = utm ? variants?.find(v => utm.endsWith(v.key)) : undefined
+  const title = pick?.title ?? baseTitle
+  const heroOverride = pick ? pick.hero : baseHero
   React.useEffect(() => startTracking(tracking ?? slug.replace(/-/g, "_")), [tracking, slug])
 
   // first plain paragraph is the standfirst under the headline; the rest is the body

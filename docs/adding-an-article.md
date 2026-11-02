@@ -15,7 +15,7 @@ Example: a file called `how-to-get-out-of-debt.md` becomes `https://<site>/how-t
 
 ## 2. Write the article
 
-Copy `content/credit-card-debt-options.md` as a starting point. The rules:
+Copy `content/state-residents-what-to-know-about-20k-debt.md` as a starting point. The rules:
 
 | You want | You write | Notes |
 |---|---|---|
@@ -44,14 +44,14 @@ Things that do **not** work (they show up exactly as typed): italics, headings s
 | `Tracking: da101_adv_23` | Name used in analytics events (default: the file name) |
 | `Stats: label \| value \| source ;; label \| value \| source` | Replaces the "By the numbers" strip for this article only |
 | `Part labels: off` | Hides the "Question 1 of 4" label above each section |
-| `Alt headlines:` / `Alt heroes:` | One file, several landing pages: see "Headline and photo variants" |
+| `Alt headlines:` / `Alt heroes:` | Photo (and optionally headline) variants picked by `utm_content`: see "Headline and photo variants" |
 
 The **first paragraph** after the top image is the large standfirst under the headline.
 A caption under an image: put it on the line right below the image line, `Caption text | Credit`.
 
 ### Boxes
 
-A box starts with `::: name` and ends with a line containing only `:::`. See `content/credit-card-debt-options.md` for the ones it uses (the others are in git history, in the removed `credit-card-minimum-payments.md`):
+A box starts with `::: name` and ends with a line containing only `:::`. See `content/state-residents-what-to-know-about-20k-debt.md` for the ones it uses (the others are in git history, in the removed `credit-card-minimum-payments.md`):
 
 | Box | Use |
 |---|---|
@@ -74,11 +74,12 @@ Links inside `tip`, `ways`, `check`, `next`, `soft` and `rail` are tracked as ca
 
 ### Headline and photo variants
 
-For ads that test headlines and photos: write the article once. The `# headline` and the top image are variant **1a**.
-Add `Alt headlines: second headline || third headline` and `Alt heroes: images/b.jpg | alt text || images/c.jpg | alt text`.
-Every headline x photo pair becomes its own page, `/<file-name>-1a/`, `-1b`, `-1c`, `-2a`... (number = headline, letter = photo). Everything else is identical, and the caption of the top image is reused.
-These pages are not listed on the home page or in the sitemap, and point search engines to `-1a`.
-The ad link is the page plus the UTM: `https://<site>/credit-card-debt-options-2b/?comet_source=taboola&comet_campaign_id={campaign_id}&comet_ad_id={site_id}&utm_content=GCO23T2b`.
+For ads that test headlines and photos: **one file per headline**, named after the headline (`# The Minimum Payment Mistake...` = `the-minimum-payment-mistake-....md`), so each headline has its own URL. The body is the same in each file.
+In each file the top image is photo **a**; add `Alt heroes: images/b.jpg | alt text || images/c.jpg | alt text` for photos **b** and **c**. The caption of the top image is reused.
+The photo is chosen by the **last letter of `utm_content`** (`...2b` = photo b). No `utm_content`, or an unknown one, shows photo a.
+The ad link is that file's page plus the UTM: `https://<site>/the-minimum-payment-mistake-many-state-residents-make/?comet_source=taboola&comet_campaign_id={campaign_id}&comet_ad_id={site_id}&utm_content=GCO23T2b`.
+The page loads with photo a and switches to b or c a split second later (it is a static site, the query is only readable in the browser).
+(One file can also hold several headlines: `Alt headlines: second || third`. Then it stays one URL and the variant keys are `1a`, `1b`, `2a`... matched against the end of `utm_content`.)
 `comet_*` and `utm_*` are passed on to every button on the page.
 
 ### The main quiz button

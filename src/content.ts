@@ -49,6 +49,7 @@ export interface Variant {
   stats?: { k: string; v: string; src: string }[] // "Stats:" line, replaces the numbers strip of this page
   alt?: { titles: string[]; heroes: Img[] } // "Alt headlines:" / "Alt heroes:" lines, see expandVariants
   partLabels?: boolean // "Part labels: off" hides the "Question 1 of 4" label above each section
+  variants?: { key: string; title: string; hero?: Img }[] // set by expandVariants: 1a, 1b... picked at runtime from ?utm_content=...1b
   unlisted?: boolean // ad landing page: not on the home page, not in the sitemap
   canonical?: string // slug of the page search engines should treat as the original
   cta?: { href: string; label?: string } // quiz link, from the last line of the markdown file

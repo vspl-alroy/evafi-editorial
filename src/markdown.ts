@@ -10,7 +10,7 @@ import type { BodyItem, Box, Cta, Btn, Img, Section, Variant } from "./content"
 //   Stats: label | value | source ;; label | value | source   replaces the "By the numbers" strip on this page.
 //   Part labels: off                                           hides "Question 1 of 4" above each section.
 //   Alt headlines: second headline || third headline          } together with the # title and the top image
-//   Alt heroes: images/b.jpg | alt text || images/c.jpg | alt  } they expand into one page per pair, see expandVariants.
+//   Alt heroes: images/b.jpg | alt text || images/c.jpg | alt  } one URL, the variant is picked from ?utm_content, see expandVariants.
 // Inline text may use **bold** and [links](https://... or #anchor); they render in the template, the parser keeps raw text.
 // An image block may carry a caption on the next line: "Caption text | Credit".
 // Boxes: "::: name optional heading" ... ":::" (see docs/adding-an-article.md): takeaways, stat, statement, tip, ways,
@@ -142,17 +142,15 @@ export function parseArticle(slug: string, md: string): Variant | null {
   return { slug, label: slug, date, kicker, byline, description, tracking, stats, partLabels, alt, cta, title, hero, intro, sections, outro: outro.length ? outro : undefined, rail }
 }
 
-// A page with "Alt headlines:" and/or "Alt heroes:" becomes one page per headline x hero, identical except those two:
-// /<slug>-1a/ = # title + top image, -1b = second image, -2a = second headline + top image, ... Without alternates: the page itself.
+// A page with "Alt headlines:" and/or "Alt heroes:" stays ONE page (same URL) and lists every headline x hero pair in `variants`:
+// 1a = # title + top image, 1b = second image, 2a = second headline + top image, ... (just a, b, c when there is one headline).
+// The template picks the variant whose key the ?utm_content ends with (...2b).
 export function expandVariants(v: Variant): Variant[] {
   if (!v.alt) return [v]
   const titles = [v.title, ...v.alt.titles]
   const heroes = [v.hero, ...v.alt.heroes.map(h => ({ ...h, caption: v.hero?.caption, credit: v.hero?.credit }))]
-  const base = `${v.slug}-1a`
-  return titles.flatMap((title, i) => heroes.map((hero, j) => {
-    const slug = `${v.slug}-${i + 1}${String.fromCharCode(97 + j)}`
-    return { ...v, alt: undefined, slug, label: slug, title, hero, unlisted: true, canonical: base }
-  }))
+  const variants = titles.flatMap((title, i) => heroes.map((hero, j) => ({ key: (titles.length > 1 ? String(i + 1) : "") + String.fromCharCode(97 + j), title, hero })))
+  return [{ ...v, alt: undefined, variants }]
 }
 
 if (process.argv[1]?.endsWith("markdown.ts")) {
@@ -187,9 +185,11 @@ if (process.argv[1]?.endsWith("markdown.ts")) {
   console.assert(ck.steps.length === 2 && ck.steps[1].flag && ck.cta === "If [x](https://a.com)", "check box")
   console.assert((bx.outro![1] as Cta).d === "Desc", "next box")
   const vs = expandVariants(parseArticle("adv", "# H1\n\nAlt headlines: H2\nAlt heroes: images/b.png | Bee || images/c.png | Sea\n\n![Ay](images/a.png)\nCap | Credit\n\ndek\n\n## S\n\ntext\n")!)
-  console.assert(vs.map(x => x.slug).join() === "adv-1a,adv-1b,adv-1c,adv-2a,adv-2b,adv-2c", "variant slugs")
-  console.assert(vs[4].title === "H2" && vs[4].hero?.img === "/content/images/b.png" && vs[4].hero.caption === "Cap" && vs[3].hero?.alt === "Ay", "variant pairing")
-  console.assert(vs.every(x => x.unlisted && x.canonical === "adv-1a" && x.intro.length === 1 && x.sections[0].body[0] === "text"), "variant body shared, header lines not in text")
+  const vk = vs[0].variants!
+  console.assert(vs.length === 1 && vs[0].slug === "adv" && vk.map(x => x.key).join() === "1a,1b,1c,2a,2b,2c", "one page, variant keys")
+  console.assert(vk[4].title === "H2" && vk[4].hero?.img === "/content/images/b.png" && vk[4].hero.caption === "Cap" && vk[3].hero?.alt === "Ay", "variant pairing")
+  console.assert(vs[0].title === "H1" && vs[0].intro.length === 1 && vs[0].sections[0].body[0] === "text", "body shared, header lines not in text")
+  console.assert(expandVariants(parseArticle("x", "# T\n\nAlt heroes: images/b.png\n")!)[0].variants!.map(x => x.key).join() === "a,b", "one headline: letter keys")
   console.assert(expandVariants(parseArticle("x", "# T\n")!).length === 1, "no alternates, one page")
   const nb = parseArticle("x", "# T\n\nStats: A | 1 | s1 ;; B | 2 | s2\n\n## S\n\n::: split Title\nSub\n- **$3** Int | 3\n- **$2** Bal | 2\nCallout: Pay $5. | Only $2.\nNote: n\n:::\n\n::: quiz Start\nFree\nHow much?\n- Under $5k | under-5k\nLink: https://a.com/c\nCheck: tap\n:::\n\n::: quiz Opts\nFree\nNot sure?\nPitch\n[Go](https://a.com/d)\nHow it works: x\n:::\n\n::: tip Good\n- one\nSource: CFPB\n:::\n\n::: link intro_link\nHi [Go](https://a.com/e)\n:::\n")!
   console.assert(parseArticle("x", "# T\n\nPart labels: off\n")!.partLabels === false && nb.partLabels === undefined, "part labels")

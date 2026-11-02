@@ -9,7 +9,7 @@ Short version: add `content/<file-name>.md` (lowercase letters, digits, hyphens)
 The file name is the web address: `how-to-get-out-of-debt.md` → `/how-to-get-out-of-debt/`.
 
 **Full step-by-step guide: [docs/adding-an-article.md](docs/adding-an-article.md)**, and how to write the `.md` itself (boxes, captions, header lines): [docs/writing-the-article-md.md](docs/writing-the-article-md.md), with the writing rules, image tips, the quiz button and a pre-publish checklist.
-Use `content/credit-card-debt-options.md` as a template.
+Use `content/state-residents-what-to-know-about-20k-debt.md` as a template.
 
 ## For developers
 
